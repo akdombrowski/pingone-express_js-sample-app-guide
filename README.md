@@ -194,6 +194,21 @@ Yes! Of, course! Well, that's exactly what the `redirect_uri` is for! It's sent 
 8. We send the Token Request, and we expect to get in return... tokens! Both an access token and id token in this case representing the user's authorization and identity information, respectively.
 
 ```javascript
+/**
+ * Callback path - /callback
+ *
+ * The path for the redirect_uri. When the user is redirected from PingOne, the
+ * authorization code is extracted from the query parameters, then the token
+ * request is constructed and submitted for access and id tokens.
+ *
+ * This path isn't meant to be manually navigated to. It serves as the location
+ * for the user to be redirected to after interacting with PingOne, the
+ * authorization server. If the user successfully authenticated/authorized with
+ * PingOne, they'll be sent to here with an authorization code in the query
+ * parameters which looks like (?code=<random-chars>). In this sample, the code
+ * is left in the URL, so you can see what it looks like and how it's sent here,
+ * but, in practice, you'll want to limit exposure to this value.
+ */
 app.get(callbackPath, async (req, res) => {
   // Try to parse the authorization code from the query parameters of the url.
   const authzCode = req.query?.code;
