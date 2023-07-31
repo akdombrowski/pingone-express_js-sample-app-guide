@@ -81,7 +81,7 @@ PINGONE_CLIENT_SECRET=###
 # The base path where this app is running
 # Express defaults to localhost, update here otherwise
 # The Hello world example uses port 3000 (it's configured in app.js)
-APP_BASE_URL=http://localhost:3000
+APP_BASE_URL=http://localhost
 ```
 
 They'll be pulled into variables using the dotenv package in our main app.js file:
