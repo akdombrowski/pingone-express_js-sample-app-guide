@@ -1,12 +1,24 @@
 {
-  "name": "p1-app-integration-nodejs-express",
+  "name": "pingone-express_js-sample-app-guide",
   "version": "1.0.0",
   "private": true,
-  "scripts": {
-    "start": "node app.js"
+  "author": {
+    "name": "Anthony Dombrowski"
+  },
+  "repository": {
+    "url": "https://github.com/akdombrowski/pingone-express_js-sample-app-guide"
+  },
+  "homepage": "https://github.com/akdombrowski/pingone-express_js-sample-app-guide#readme",
+  "readme": "https://github.com/akdombrowski/pingone-express_js-sample-app-guide#readme",
+  "description": "A simple implementation of OAuth/OIDC Auth using the Authorization Code flo and PingOne",
+  "engines": {
+    "node": ">18.0"
   },
   "dependencies": {
     "dotenv": "^16.0.3",
     "express": "^4.18.2"
+  },
+  "scripts": {
+    "start": "node app.js"
   }
 }
