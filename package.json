@@ -10,7 +10,7 @@
   },
   "homepage": "https://github.com/akdombrowski/pingone-express_js-sample-app-guide#readme",
   "readme": "https://github.com/akdombrowski/pingone-express_js-sample-app-guide#readme",
-  "description": "A simple implementation of OAuth/OIDC Auth using the Authorization Code flo and PingOne",
+  "description": "A simple implementation of OAuth/OIDC Auth using the Authorization Code flow and PingOne",
   "engines": {
     "node": ">18.0"
   },
