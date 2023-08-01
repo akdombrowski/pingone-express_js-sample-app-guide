@@ -1,60 +1,74 @@
-<img alt="Ping Identity" src="./images/PingIdentity.svg" width="25%" height="auto" />
+![PingOne](images/PingIdentity.svg)
 
-<img alt="PingOne" src="./images/PingOne.svg" width="20%" height="auto" style="padding-left: 40%;" />
+![PingOne](images/PingOne.svg)
 
-# PingOne with NodeJS Express
+# PingOne Authentication
 
-### Authentication using PingOne and the Authorization Code OAuth 2.0/OIDC Flow
+###### Express, NodeJS, OAuth 2.0, OIDC, Authz Code Grant Type, Auth, PingOne
 
-A quick example of how to integrate [PingOne](https://apidocs.pingidentity.com/pingone/main/v1/api/) with an [Express](https://expressjs.com/) app using the [OIDC](https://openid.net/specs/openid-connect-core-1_0.html#CodeFlowAuth)[^1] / [OAuth 2.0](https://www.rfc-editor.org/rfc/rfc6749#section-4.1)[^2] Authorization Code Flow.
+This is an example of how to integrate [PingOne](https://apidocs.pingidentity.com/pingone/main/v1/api/) with a simple [Express](https://expressjs.com/) app using the [OIDC](https://openid.net/specs/openid-connect-core-1_0.html#CodeFlowAuth)[^1] / [OAuth 2.0](https://www.rfc-editor.org/rfc/rfc6749#section-4.1)[^2] Authorization Code Flow.
 
-#### How to use this repo
+---
 
-1. Follow along each step by taking a look at the corresponding source code and running it.
-   * Each step has its own folder with an `app.js` file:
-      * e.g., `start/app.js`, `step1/app.js`, and so on...
-   * You can run each step with `npm run <step>` from same directory as `package.json`
-     * Where `<step> = start || step1 || step2 || step3 || step4`
-2. Go through the README and use the code in your own app.
-3. Start with the complete app in the `step4` directory
-   * Run the app from the same directory as `package.json` using the command: `npm run step4`
+## How to use this repo
 
-### Run the app
+a) Follow along each step by taking a look at the corresponding source code and running it.
 
-##### Prerequisites
+* Each step has its own folder with an `app.js` file:
+  * e.g., `start/app.js`, `step1/app.js`, and so on...
+  * You can run each step with `npm run <step>` from same directory as `package.json`
+  * Where `<step> = start || step1 || step2 || step3 || step4`
+  
+b) Go through the README and use the code in your own app.
+
+c) Start with the complete app in the `step4` directory
+
+* Run the app from the same directory as `package.json` using the command: `npm run step4`
+
+---
+
+# Run the app
+
+#### Prerequisites
 
 * [PingOne account](https://www.pingidentity.com/en/try-ping.html)
 * [NodeJS](https://nodejs.org/en)
-* IDE or Text Editor & Terminal
+* IDE (e.g., [VS Code](https://code.visualstudio.com/download)/[Intellij](<https://www.jetbrains.com/idea/download>)) or Text Editor & Terminal
 
-#### Install Dependencies and Start
+## Install Dependencies and Start
 
 ###### *Each step can be run by following two steps. Try it out along the way*
 
 1. `npm install` [^3]
-2. `npm run <step>`
-   * `npm run start`
+2. each step can be run with `npm run` + \<step\>
+   * `npm run step0`
    * `npm run step1`
    * `npm run step2`
    * `npm run step3`
    * `npm run step4`
 
-#### Interaction
+## Interaction
 
 ###### *Make sure you've entered the correct PingOne values from an App Connection into an `.env` file before running. There's an example `.env` file you can duplicate and enter your values
 
 1. Navigate to `localhost:3000` in a browser.
 2. Click [Login]() [^5] to initiate authentication.
 
-## Walkthrough Guide
+---
 
-#### Start - A functioning Express server
+# Walkthrough Guide
+
+## Step 0 - A functioning Express server
+
+==========================================
 
 `./start/app.js`
 
 We'll start with a simple working example with Express's Hello World example!
 
-#### Step 1 - Register your app with PingOne
+---
+
+## Step 1 - Register your app with PingOne
 
 `./step1/app.js`
 
@@ -64,7 +78,7 @@ We'll start with a simple working example with Express's Hello World example!
 
 ***
 
-<img alt="PingOne" src="./images/p1-app-conn-configuration-redirectURI.svg" width="60%" height="auto" style="margin-left: 10%;" />
+![PingOne](images/p1-app-conn-configuration-redirectURI.svg)
 
 ###### You'll need to copy over some of the values from this app
 
@@ -112,7 +126,11 @@ const clientSecret = process.env.PINGONE_CLIENT_SECRET;
 const appBaseURL = process.env.APP_BASE_URL;
 ```
 
-#### Step 2 - Constants Required
+---
+
+## Step 2 - Constants Required
+
+================================
 
 `./step2/app.js`
 
@@ -152,7 +170,10 @@ const grantType = "authorization_code";
 const responseType = "code";
 ```
 
-#### Step 3 - Modifying the Root Path Logic
+---
+
+## Step 3 - Modifying the Root Path Logic
+=========================================
 
 `./step3/app.js`
 
@@ -194,7 +215,9 @@ app.get("/", (req, res) => {
 });
 ```
 
-#### Step 4 - Setting up the Redirect Path
+---
+
+## Step 4 - Setting up the Redirect Path
 
 `./step4/app.js`
 
@@ -299,17 +322,19 @@ app.get(callbackPath, async (req, res) => {
 });
 ```
 
-#### **Congrats! You did it! You've successfully retrieved tokens by authenticating a user with PingOne!**
+<h1 align="center">Congrats! You did it</h1>
 
-***
+You've successfully authenticated a user with PingOne! The returned tokens serve as your proof.
 
-### Common Errors and Potential Solutions
+---
+
+## Common Errors and Potential Solutions
 
 * If PingOne sends a redirect_uri mismatch error, check the PingOne app connection and that you've entered the redirect uri correctly.
 * If PingOne sends a resource could not be found error, check the auth base url and that the App Connection has been turned on (flip the toggle on the app conenction)
 * If you have problems just running `npm start`, delete `node_modules` and `package-lock.json` and run the `npm install` again. Then try starting the app again.
 
-### What's next?
+## What's next?
 
 There are several different next steps you might take depending on your use case. Verifying the token(s), sending it in a request to PingOne, using token introspection, submitting a request to the resource server, and more.
 

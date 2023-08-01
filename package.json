@@ -11,6 +11,23 @@
   "homepage": "https://github.com/akdombrowski/pingone-express_js-sample-app-guide#readme",
   "readme": "https://github.com/akdombrowski/pingone-express_js-sample-app-guide#readme",
   "description": "A simple implementation of OAuth/OIDC Auth using the Authorization Code flow and PingOne",
+  "keywords": [
+    "PingOne",
+    "NodeJS",
+    "Express",
+    "OAuth 2.0",
+    "OIDC",
+    "Authz Code Grant Type",
+    "Auth",
+    "Authn",
+    "Authz",
+    "Authorization",
+    "Authentication",
+    "OpenID",
+    "Identity",
+    "Login",
+    "Cybersecurity"
+  ],
   "engines": {
     "node": ">18.0"
   },
@@ -19,7 +36,7 @@
     "express": "^4.18.2"
   },
   "scripts": {
-    "start": "node ./start/app.js",
+    "start": "node ./step0/app.js",
     "step1": "node ./step1/app.js",
     "step2": "node ./step2/app.js",
     "step3": "node ./step3/app.js",
