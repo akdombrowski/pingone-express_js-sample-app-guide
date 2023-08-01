@@ -33,11 +33,11 @@ c) Start with the complete app in the `step4` directory
 
 * [PingOne account](https://www.pingidentity.com/en/try-ping.html)
 * [NodeJS](https://nodejs.org/en)
-* IDE (e.g., [VS Code](https://code.visualstudio.com/download)/[Intellij](<https://www.jetbrains.com/idea/download>)) or Text Editor & Terminal
+* [An IDE](https://code.visualstudio.com/download) or a Text Editor & Terminal
 
-## Install Dependencies and Start
+### Install Dependencies and Start
 
-###### *Each step can be run by following two steps. Try it out along the way*
+###### *You can run each step if you want to experiment*
 
 1. `npm install` [^3]
 2. each step can be run with `npm run` + \<step\>
@@ -60,9 +60,7 @@ c) Start with the complete app in the `step4` directory
 
 ## Step 0 - A functioning Express server
 
-==========================================
-
-`./start/app.js`
+`./step0/app.js`
 
 We'll start with a simple working example with Express's Hello World example!
 
@@ -80,11 +78,11 @@ We'll start with a simple working example with Express's Hello World example!
 
 ![PingOne](images/p1-app-conn-configuration-redirectURI.svg)
 
-###### You'll need to copy over some of the values from this app
+###### *Take a mental image or maybe just remember this page. You'll need to copy over some of the values from this app into the source code next
 
 ***
 
-3. Duplicate or copy the `.env.EXAMPLE` file and rename the new file `.env`.
+3. Duplicate or copy the `.env.EXAMPLE` file and rename it `.env`.
 4. Add the values from the App Connection you just created (found on the configuration tab).
 
 ##### Protect your client secret
@@ -130,8 +128,6 @@ const appBaseURL = process.env.APP_BASE_URL;
 
 ## Step 2 - Constants Required
 
-================================
-
 `./step2/app.js`
 
 1. This step adds onto the last by creating some constants that'll be needed for our particular configuration and type of authentication/authorization being performed, i.e., PingOne as the authorization server and using the Authorization Code flow.
@@ -173,7 +169,6 @@ const responseType = "code";
 ---
 
 ## Step 3 - Modifying the Root Path Logic
-=========================================
 
 `./step3/app.js`
 
@@ -322,7 +317,7 @@ app.get(callbackPath, async (req, res) => {
 });
 ```
 
-<h1 align="center">Congrats! You did it</h1>
+<h3 align="center">Congrats! You did it</h3>
 
 You've successfully authenticated a user with PingOne! The returned tokens serve as your proof.
 
