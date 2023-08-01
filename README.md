@@ -10,12 +10,16 @@ A quick example of how to integrate [PingOne](https://apidocs.pingidentity.com/p
 
 #### How to use this repo
 
-1. Follow along building and understanding the implementation step-by-step
-2. Start with the complete app and experiment
+1. Follow along each step by taking a look at the corresponding source code and running it.
+   * Each step has its own folder with an `app.js` file:
+      * e.g., `start/app.js`, `step1/app.js`, and so on...
+   * You can run each step with `npm run <step>` from same directory as `package.json`
+     * Where `<step> = start || step1 || step2 || step3 || step4`
+2. Go through the README and use the code in your own app.
+3. Start with the complete app in the `step4` directory
+   * Run the app from the same directory as `package.json` using the command: `npm run step4`
 
 ### Run the app
-
-###### *Each step can be run by following two steps. Try it out along the way*
 
 ##### Prerequisites
 
@@ -25,12 +29,19 @@ A quick example of how to integrate [PingOne](https://apidocs.pingidentity.com/p
 
 #### Install Dependencies and Start
 
+###### *Each step can be run by following two steps. Try it out along the way*
+
 1. `npm install` [^3]
-2. `npm start`
+2. `npm run <step>`
+   * `npm run start`
+   * `npm run step1`
+   * `npm run step2`
+   * `npm run step3`
+   * `npm run step4`
 
 #### Interaction
 
-###### *Make sure you've entered the correct PingOne values in a `.env` file before running
+###### *Make sure you've entered the correct PingOne values from an App Connection into an `.env` file before running. There's an example `.env` file you can duplicate and enter your values
 
 1. Navigate to `localhost:3000` in a browser.
 2. Click [Login]() [^5] to initiate authentication.
@@ -39,10 +50,13 @@ A quick example of how to integrate [PingOne](https://apidocs.pingidentity.com/p
 
 #### Start - A functioning Express server
 
-1. We'll start with a simple working example with Express's Hello World example!
-2. Switch to branch `step-1` when you're ready
+`./start/app.js`
+
+We'll start with a simple working example with Express's Hello World example!
 
 #### Step 1 - Register your app with PingOne
+
+`./step1/app.js`
 
 1. Create a new PingOne App Connection using the OIDC Web App template.
 2. On the Configuration tab, add the Redirect URI:
@@ -58,7 +72,6 @@ A quick example of how to integrate [PingOne](https://apidocs.pingidentity.com/p
 
 3. Duplicate or copy the `.env.EXAMPLE` file and rename the new file `.env`.
 4. Add the values from the App Connection you just created (found on the configuration tab).
-5. Switch to branch `step-2` when you're ready
 
 ##### Protect your client secret
 
@@ -101,9 +114,10 @@ const appBaseURL = process.env.APP_BASE_URL;
 
 #### Step 2 - Constants Required
 
+`./step2/app.js`
+
 1. This step adds onto the last by creating some constants that'll be needed for our particular configuration and type of authentication/authorization being performed, i.e., PingOne as the authorization server and using the Authorization Code flow.
 2. Have a look at each variable and the associated explanations in the comments.
-3. Switch to branch `step-3` when you're ready
 
 ```javascript
 // This app's base origin
@@ -140,11 +154,12 @@ const responseType = "code";
 
 #### Step 3 - Modifying the Root Path Logic
 
+`./step3/app.js`
+
 1. Instead of returning "Hello World" from the root path, we'll modify it to construct our authorization request as a URL and send it as the href of an HTML `a` tag (aka a link).
 2. Once a user navigates their browser to the root path and clicks the login link, they'll be redirected to PingOne to authenticated and authorize any access she wishes to give the client.
 3. Go ahead and try it out!
 4. Tip: Open your browser's dev tools and take a look at what's happening in the Network tab.
-5. Switch to branch `step-4` when you're ready
 
 ```javascript
 /**
@@ -180,6 +195,8 @@ app.get("/", (req, res) => {
 ```
 
 #### Step 4 - Setting up the Redirect Path
+
+`./step4/app.js`
 
 Once the user has finished authentication with PingOne, you'll want them to return to your app, right?
 Yes! Of, course! Well, that's exactly what the `redirect_uri` is for! It's sent as a parameter in the authorization request and then in the token request.
