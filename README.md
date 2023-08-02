@@ -321,7 +321,7 @@ app.get(callbackPath, async (req, res) => {
 });
 ```
 
-<h3 align="center">Congrats! You did it</h3>
+<h4 align="center">Congrats! You did it!</h4>
 
 You've successfully authenticated a user with PingOne! The returned tokens serve as your proof.
 
