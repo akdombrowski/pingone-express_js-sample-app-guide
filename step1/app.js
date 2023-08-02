@@ -65,7 +65,7 @@ require("dotenv").config();
 // PingOne Auth (authentication/authorization) base url
 const authBaseURL = process.env.PINGONE_AUTH_BASE_URL;
 // PingOne Environment ID
-const envID = process.env.PINGONE_ENV_ID;
+const envID = process.env.PINGONE_ENVIRONMENT_ID;
 // PingOne Client ID of the App Connection
 const clientID = process.env.PINGONE_CLIENT_ID;
 // PingOne Client Secret of the App Connection

@@ -70,15 +70,15 @@ We'll start with a simple working example with Express's Hello World example!
 
 `./step1/app.js`
 
-1. Create a new PingOne App Connection using the OIDC Web App template.
+1. In the console, navigate to Connections > Applications and create a new PingOne App Connection using the OIDC Web App template.
 2. On the Configuration tab, add the Redirect URI:
    `http://localhost:3000/callback`
 
 ***
 
-![PingOne](images/p1-app-conn-configuration-redirectURI.svg)
+###### *Keep this page open! The values that are required for the .env file in the next step can be found here.
 
-###### *Take a mental image or maybe just remember this page. You'll need to copy over some of the values from this app into the source code next
+![PingOne](images/p1-app-conn-configuration-redirectURI.svg)
 
 ***
 
@@ -97,7 +97,7 @@ We'll start with a simple working example with Express's Hello World example!
 PINGONE_AUTH_BASE_URL=https://auth.pingone.com
 
 # PingOne Environment ID
-PINGONE_ENV_ID=#z2345678-0000-456c-a657-3a21fc9ece7e
+PINGONE_ENVIRONMENT_ID=#z2345678-0000-456c-a657-3a21fc9ece7e
 
 # PingOne App Connection Configuration Info
 PINGONE_CLIENT_ID=#x7654321-0000-4fc4-b8ed-1441b767e78f
@@ -115,7 +115,7 @@ They'll be pulled into variables using the dotenv package in our main app.js fil
 // PingOne Auth (authentication/authorization) base url
 const authBaseURL = process.env.PINGONE_AUTH_BASE_URL;
 // PingOne Environment ID
-const envID = process.env.PINGONE_ENV_ID;
+const envID = process.env.PINGONE_ENVIRONMENT_ID;
 // PingOne Client ID of the App Connection
 const clientID = process.env.PINGONE_CLIENT_ID;
 // PingOne Client Secret of the App Connection
