@@ -87,8 +87,10 @@ We'll start with a simple working example with Express's Hello World example!
 
 ##### Protect your client secret
 
-```javascript
-# These values can be found on your Application Connection's Configuration tab in the PingOne admin console
+```shell
+# These values can be found on your 
+# Application Connection's Configuration tab 
+# in the PingOne admin console
 
 # Auth base url is dependent upon region
 # e.g.,
@@ -103,7 +105,7 @@ PINGONE_ENVIRONMENT_ID=#z2345678-0000-456c-a657-3a21fc9ece7e
 
 # PingOne App Connection Configuration Info
 PINGONE_CLIENT_ID=#x7654321-0000-4fc4-b8ed-1441b767e78f
-PINGONE_CLIENT_SECRET=###
+PINGONE_CLIENT_SECRET=########-####-####-####-############
 
 # The base path where this app is running
 # Express defaults to localhost, update here otherwise
