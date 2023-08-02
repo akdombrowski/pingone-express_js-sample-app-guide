@@ -74,13 +74,13 @@ We'll start with a simple working example with Express's Hello World example!
 2. On the Configuration tab, add the Redirect URI:
    `http://localhost:3000/callback`
 
-***
+---
 
 ###### *Keep this page open! The values that are required for the .env file in the next step can be found here.
 
 ![PingOne](images/p1-app-conn-configuration-redirectURI.svg)
 
-***
+---
 
 3. Duplicate or copy the `.env.EXAMPLE` file and rename it `.env`.
 4. Add the values from the App Connection you just created (found on the configuration tab).
@@ -88,6 +88,8 @@ We'll start with a simple working example with Express's Hello World example!
 ##### Protect your client secret
 
 ```javascript
+# These values can be found on your Application Connection's Configuration tab in the PingOne admin console
+
 # Auth base url is dependent upon region
 # e.g.,
 # NA - https://auth.pingone.com
