@@ -62,7 +62,7 @@ c) Start with the complete app in the `step4` directory
 
 `./step0/app.js`
 
-We'll start with a simple working example with Express's Hello World example!
+We'll start with a simple working example with [Express's Hello World example](https://expressjs.com/en/starter/hello-world.html)!
 
 ---
 
