@@ -12,18 +12,21 @@ This is an example of how to integrate [PingOne](https://apidocs.pingidentity.co
 
 ## How to use this repo
 
-a) Follow along each step by taking a look at the corresponding source code and running it.
+a) **Step by Step**
+Walking through step by step will guide you from a simple hello world example to a basic app with PingOne authentication using OAuth/OIDC.
 
 * Each step has its own folder with an `app.js` file:
-  * e.g., `start/app.js`, `step1/app.js`, and so on...
+  * e.g., `step0/app.js`, `step1/app.js`, and so on...
   * You can run each step with `npm run <step>` from same directory as `package.json`
-  * Where `<step> = start || step1 || step2 || step3 || step4`
+  * Where `<step> = step0 || step1 || step2 || step3 || step4`
   
-b) Go through the README and use the code in your own app.
+b) **Use Snippets in Your App**
+Go through the README and/or source code and use what you need in your own app.
 
-c) Start with the complete app in the `step4` directory
+c) **Start Experimenting Now**
+Jump to the last step and experiment with the complete example.
 
-* Run the app from the same directory as `package.json` using the command: `npm run step4`
+* Run the app (after installing) from the same directory as `package.json` using the command: `npm run step4`
 
 ---
 
@@ -63,6 +66,7 @@ c) Start with the complete app in the `step4` directory
 `./step0/app.js`
 
 We'll start with a simple working example with [Express's Hello World example](https://expressjs.com/en/starter/hello-world.html)!
+This step serves as a test to check whether your environment is properly set up, and it gives us something functional to start with and integrate PingOne into.
 
 ---
 
@@ -70,13 +74,13 @@ We'll start with a simple working example with [Express's Hello World example](h
 
 `./step1/app.js`
 
-1. In the console, navigate to Connections > Applications and create a new PingOne App Connection using the OIDC Web App template.
+1. In the [PingOne console](https://pingidentity.com/signon), navigate to Connections > Applications and create a new PingOne App Connection using the OIDC Web App template.
 2. On the Configuration tab, add the Redirect URI:
    `http://localhost:3000/callback`
 
 ---
 
-###### *Keep this page open! The values that are required for the .env file in the next step can be found here.
+###### *Keep this page open! The values that are required for the .env file in the next step can be found here
 
 ![PingOne](images/p1-app-conn-configuration-redirectURI.svg)
 
@@ -85,7 +89,8 @@ We'll start with a simple working example with [Express's Hello World example](h
 3. Duplicate or copy the `.env.EXAMPLE` file and rename it `.env`.
 4. Add the values from the App Connection you just created (found on the configuration tab).
 
-##### Protect your client secret
+**Protect your Client Secret** - *In a traditional Web App, where we have a backend to work with, we just need to make sure the secret doesn't get exposed through to the frontend. This example makes use of a `.env` file that is accessed only on the server-side and only when needed. This helps keep the secret a secret and we don't have to hardcode the secret into the source code.*
+
 
 ```shell
 # These values can be found on your 
