@@ -68,29 +68,58 @@ Jump to the last step and experiment with the complete example.
 We'll start with a simple working example with [Express's Hello World example](https://expressjs.com/en/starter/hello-world.html)!
 This step serves as a test to check whether your environment is properly set up, and it gives us something functional to start with and integrate PingOne into.
 
+*Some comments have been added for extra clarity
+
+```javascript
+/**
+ * Express Server Config and Initialization
+ */
+const express = require("express");
+const app = express();
+const port = 3000;
+
+/**
+ * Root path - "http://localhost:3000/" (or without the explicit "/" => "http://localhost:3000")
+ *
+ * Navigating to the root path should render "Hello World!" in your browser.
+ */
+app.get("/", (req, res) => {
+  res.send("Hello World!");
+});
+
+/**
+ * This outputs a message to your terminal (wherever you ran the command to 
+ * start the app) when the Express server starts up.
+ */
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`);
+});
+```
+
 ---
 
 ## Step 1 - Register your app with PingOne
 
 `./step1/app.js`
 
-1. In the [PingOne console](https://pingidentity.com/signon), navigate to Connections > Applications and create a new PingOne App Connection using the OIDC Web App template.
-2. On the Configuration tab, add the Redirect URI:
-   `http://localhost:3000/callback`
+1. In the [PingOne console](https://pingidentity.com/signon), navigate to `Connections > Applications` and create a new **PingOne App Connection** using the *OIDC Web App* template. This template is useful when your app has a backend/server.
+2. On the ***Configuration*** tab, add the **Redirect URI**:
+   `http://localhost:3000/callback` .
+
+   We'll see this come up in a later step, but here we tell PingOne that this is a valid url to redirect the user back to.
 
 ---
 
 ###### *Keep this page open! The values that are required for the .env file in the next step can be found here
 
-![PingOne](images/p1-app-conn-configuration-redirectURI.svg)
+![New PingOne Application Connection - Edit Configuration View](images/p1-app-conn-configuration-redirectURI.svg)
 
 ---
 
 3. Duplicate or copy the `.env.EXAMPLE` file and rename it `.env`.
-4. Add the values from the App Connection you just created (found on the configuration tab).
+4. Fill in the corresponding values from the PingOne App Connection you just created (the values can be found on the configuration tab).
 
-**Protect your Client Secret** - *In a traditional Web App, where we have a backend to work with, we just need to make sure the secret doesn't get exposed through to the frontend. This example makes use of a `.env` file that is accessed only on the server-side and only when needed. This helps keep the secret a secret and we don't have to hardcode the secret into the source code.*
-
+\***Protect your Client Secret** - *In a traditional Web App, where we have a backend/server to work with, we just need to make sure the secret doesn't get exposed through the frontend. This example makes use of a `.env` file that is accessed only on the server-side and only when needed. This helps keep the secret a secret without hardcoding the secret in the source code.*
 
 ```shell
 # These values can be found on your 
@@ -118,42 +147,42 @@ PINGONE_CLIENT_SECRET=########-####-####-####-############
 APP_BASE_URL=http://localhost
 ```
 
-They'll be pulled into variables using the dotenv package in our main app.js file:
+In the source code, we'll pull these values into variables using the dotenv package with the `process.env.<variable_name>` syntax:
 
 ```javascript
 // PingOne Auth (authentication/authorization) base url
 const authBaseURL = process.env.PINGONE_AUTH_BASE_URL;
-// PingOne Environment ID
+// PingOne Environment ID (the ID of environment where the App Connection is
+// located)
 const envID = process.env.PINGONE_ENVIRONMENT_ID;
 // PingOne Client ID of the App Connection
 const clientID = process.env.PINGONE_CLIENT_ID;
 // PingOne Client Secret of the App Connection
 const clientSecret = process.env.PINGONE_CLIENT_SECRET;
-// Express app (this app) base url
+// Express app (this app) base url (e.g., http://localhosts)
 const appBaseURL = process.env.APP_BASE_URL;
 ```
 
 ---
 
-## Step 2 - Constants Required
+## Step 2 - Add Required Constants
 
 `./step2/app.js`
 
-1. This step adds onto the last by creating some constants that'll be needed for our particular configuration and type of authentication/authorization being performed, i.e., PingOne as the authorization server and using the Authorization Code flow.
-2. Have a look at each variable and the associated explanations in the comments.
+1. This step adds some constants that'll be needed for our particular configuration and type of authentication/authorization being performed, i.e., PingOne as the authorization server and using the Authorization Code flow.
 
 ```javascript
-// This app's base origin
+// This app's base origin (e.g., http://localhost:3000)
 const appBaseOrigin = appBaseURL + ":" + port;
 // PingOne authorize endpoint
 const authorizeEndpoint = "/as/authorize";
 // PingOne token endpoint
 const tokenEndpoint = "/as/token";
 // The url path made available for when the user is redirected back from the
-// authorization server, PingOne.
+// authorization server, PingOne
 const callbackPath = "/callback";
 // The full url where the user is redirected after authenticating/authorizing
-// with PingOne.
+// with PingOne (e.g., http://localhost:3000/callback)
 const redirectURI = appBaseOrigin + callbackPath;
 // Scopes specify what kind of access the client is requesting from the user.
 // These are some standard OIDC scopes.
@@ -188,9 +217,13 @@ const responseType = "code";
 
 ```javascript
 /**
- * Root path - /
+ * Root url - "http://localhost:3000/" (or without the explicit "/" =>
+ * "http://localhost:3000")
  *
- * Creates and serves the authorization request as a plain link.
+ * Creates and serves the authorization request as a plain link for the user to
+ * click and start authentication.
+ *
+ * No longer will respond with "Hello World!" 
  *
  * When someone navigates their browser, or user agent, to the root path, "/", a
  * basic link with the text "Login" is rendered. Clicking the link will redirect
@@ -234,12 +267,12 @@ Yes! Of, course! Well, that's exactly what the `redirect_uri` is for! It's sent 
 4. In the Authorization Code flow, we expect PingOne to send an authorization code (now, you see why they call it the "Authorization Code flow'? ;)) along with the user to our redirect path.
 5. The code will be in the query parameters of the request from PingOne.
 6. We'll extract this code because we'll need it for the Token Request!
-7. Constructing the token request is a little more involved than the authorization request, but, fear not, we've explained everything right there in the source code file!
+7. Constructing the token request is a little more involved than the authorization request, but, fear not, we've explained everything right there in the source code!
 8. We send the Token Request, and we expect to get in return... tokens! Both an access token and id token in this case representing the user's authorization and identity information, respectively.
 
 ```javascript
 /**
- * Callback path - /callback
+ * Callback url - "http://localhost:3000/callback"
  *
  * The path for the redirect_uri. When the user is redirected from PingOne, the
  * authorization code is extracted from the query parameters, then the token
@@ -342,7 +375,7 @@ You've successfully authenticated a user with PingOne! The returned tokens serve
 
 There are several different next steps you might take depending on your use case. Verifying the token(s), sending it in a request to PingOne, using token introspection, submitting a request to the resource server, and more.
 
-During testing, you can [decode the token(s) with this tool here](https://developer.pingidentity.com/en/tools/jwt-decoder.html), verify the signature, check if it's expired, and examine the claims contained within each token. However, remember that these are `Bearer` tokens! That means that these tokens are furry and like honey... I mean, whoever "bears" (aka holds) the tokens holds the power that they grant. This particular decoder runs client-side (aka exclusively in the browser), but you should still take extra care to make sure you don't give someone the keys to your kingdom!
+During testing, you can [decode the token(s) with this tool here](https://developer.pingidentity.com/en/tools/jwt-decoder.html), verify the signature, check if it's expired, and examine the claims contained within each token. However, remember that these are `Bearer` tokens! That means that these tokens are furry and like honey... I mean, whoever "bears" (aka holds) the tokens holds the power that they grant. This particular decoder runs client-side (a.k.a. exclusively in the browser), but you should still take extra care to make sure you don't give someone the keys to your kingdom!
 
 [^1]: For authentication.
 [^2]: For authorization.

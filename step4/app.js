@@ -64,13 +64,14 @@ require("dotenv").config();
  */
 // PingOne Auth (authentication/authorization) base url
 const authBaseURL = process.env.PINGONE_AUTH_BASE_URL;
-// PingOne Environment ID
+// PingOne Environment ID (the ID of environment where the App Connection is
+// located)
 const envID = process.env.PINGONE_ENVIRONMENT_ID;
 // PingOne Client ID of the App Connection
 const clientID = process.env.PINGONE_CLIENT_ID;
 // PingOne Client Secret of the App Connection
 const clientSecret = process.env.PINGONE_CLIENT_SECRET;
-// Express app (this app) base url
+// Express app (this app) base url (e.g., http://localhosts)
 const appBaseURL = process.env.APP_BASE_URL;
 
 /**
@@ -109,9 +110,13 @@ const grantType = "authorization_code";
 const responseType = "code";
 
 /**
- * Root path - /
+ * Root url - "http://localhost:3000/" (or without the explicit "/" =>
+ * "http://localhost:3000")
  *
- * Creates and serves the authorization request as a plain link.
+ * Creates and serves the authorization request as a plain link for the user to
+ * click and start authentication.
+ *
+ * No longer will respond with "Hello World!" 
  *
  * When someone navigates their browser, or user agent, to the root path, "/", a
  * basic link with the text "Login" is rendered. Clicking the link will redirect
@@ -140,7 +145,7 @@ app.get("/", (req, res) => {
 });
 
 /**
- * Callback path - /callback
+ * Callback url - "http://localhost:3000/callback"
  *
  * The path for the redirect_uri. When the user is redirected from PingOne, the
  * authorization code is extracted from the query parameters, then the token
@@ -226,7 +231,10 @@ app.get(callbackPath, async (req, res) => {
   }
 });
 
-// Express app "has started" message
+/**
+ * This outputs a message (modified to show you the current step) to your
+ * terminal (where you started the app) when the Express server starts up.
+ */
 app.listen(port, () => {
   console.log(
     `Step 4 - The PingOne sample Express app has started listening on ${appBaseURL}:${port}`
