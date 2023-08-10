@@ -71,7 +71,7 @@ const envID = process.env.PINGONE_ENVIRONMENT_ID;
 const clientID = process.env.PINGONE_CLIENT_ID;
 // PingOne Client Secret of the App Connection
 const clientSecret = process.env.PINGONE_CLIENT_SECRET;
-// Express app (this app) base url (e.g., http://localhosts)
+// Express app (this app) base url (e.g., http://localhost)
 const appBaseURL = process.env.APP_BASE_URL;
 
 /**
