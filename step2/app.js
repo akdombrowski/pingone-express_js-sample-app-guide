@@ -64,30 +64,31 @@ require("dotenv").config();
  */
 // PingOne Auth (authentication/authorization) base url
 const authBaseURL = process.env.PINGONE_AUTH_BASE_URL;
-// PingOne Environment ID
+// PingOne Environment ID (the ID of environment where the App Connection is
+// located)
 const envID = process.env.PINGONE_ENVIRONMENT_ID;
 // PingOne Client ID of the App Connection
 const clientID = process.env.PINGONE_CLIENT_ID;
 // PingOne Client Secret of the App Connection
 const clientSecret = process.env.PINGONE_CLIENT_SECRET;
-// Express app (this app) base url
+// Express app (this app) base url (e.g., http://localhosts)
 const appBaseURL = process.env.APP_BASE_URL;
 
 /**
  * Some constants we'll need for an OAuth Authorization Code flow.
  * We'll also add Authentication with OIDC.
  */
-// This app's base origin
+// This app's base origin (e.g., http://localhost:3000)
 const appBaseOrigin = appBaseURL + ":" + port;
 // PingOne authorize endpoint
 const authorizeEndpoint = "/as/authorize";
 // PingOne token endpoint
 const tokenEndpoint = "/as/token";
 // The url path made available for when the user is redirected back from the
-// authorization server, PingOne.
+// authorization server, PingOne
 const callbackPath = "/callback";
 // The full url where the user is redirected after authenticating/authorizing
-// with PingOne.
+// with PingOne (e.g., http://localhost:3000/callback)
 const redirectURI = appBaseOrigin + callbackPath;
 // Scopes specify what kind of access the client is requesting from the user.
 // These are some standard OIDC scopes.
@@ -108,11 +109,20 @@ const scopes = "openid";
 const grantType = "authorization_code";
 const responseType = "code";
 
+/**
+ * Root url - "http://localhost:3000/" (or without the explicit "/" =>
+ * "http://localhost:3000")
+ *
+ * Navigating to the root path should render "Hello World!" in your browser.
+ */
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
-// Express app "has started" message
+/**
+ * This outputs a message (modified to show you the current step) to your
+ * terminal (where you started the app) when the Express server starts up.
+ */
 app.listen(port, () => {
   console.log(
     `Step 2 - The PingOne sample Express app has started listening on ${appBaseURL}:${port}`

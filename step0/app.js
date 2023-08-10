@@ -20,7 +20,8 @@ const app = express();
 const port = 3000;
 
 /**
- * Root path - "/"
+ * Root url - "http://localhost:3000/" (or without the explicit "/" =>
+ * "http://localhost:3000")
  *
  * Navigating to the root path should render "Hello World!" in your browser.
  */

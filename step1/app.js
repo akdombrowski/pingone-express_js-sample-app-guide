@@ -64,20 +64,30 @@ require("dotenv").config();
  */
 // PingOne Auth (authentication/authorization) base url
 const authBaseURL = process.env.PINGONE_AUTH_BASE_URL;
-// PingOne Environment ID
+// PingOne Environment ID (the ID of environment where the App Connection is
+// located)
 const envID = process.env.PINGONE_ENVIRONMENT_ID;
 // PingOne Client ID of the App Connection
 const clientID = process.env.PINGONE_CLIENT_ID;
 // PingOne Client Secret of the App Connection
 const clientSecret = process.env.PINGONE_CLIENT_SECRET;
-// Express app (this app) base url
+// Express app (this app) base url (e.g., http://localhosts)
 const appBaseURL = process.env.APP_BASE_URL;
 
+/**
+ * Root url - "http://localhost:3000/" (or without the explicit "/" =>
+ * "http://localhost:3000")
+ *
+ * Navigating to the root path should render "Hello World!" in your browser.
+ */
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
-// Express app "has started" message
+/**
+ * This outputs a message (modified to show you the current step) to your
+ * terminal (where you started the app) when the Express server starts up.
+ */
 app.listen(port, () => {
   console.log(
     `Step 1 - The PingOne sample Express app has started listening on ${appBaseURL}:${port}`
