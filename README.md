@@ -383,6 +383,8 @@ You've successfully authenticated a user with PingOne! The returned tokens serve
 
 There are several different next steps you might take depending on your use case. Verifying the token(s), sending it in a request to PingOne, using token introspection, submitting a request to the resource server, and more.
 
+But, first you don't want to leave the authorization code in the url. This is done in this app so you can see how it all works and what to expect when you integrate into your own app. You'll want to extract the code and remove it from the url because it can be used to get an access token with other protections or it can block you from getting an access token if someone else attempts to use it and the authorization server invalidates it as a precautionary measure before you get a chance to use it.
+
 During testing, you can [decode the token(s) with this tool here](https://developer.pingidentity.com/en/tools/jwt-decoder.html), verify the signature, check if it's expired, and examine the claims contained within each token. However, remember that these are `Bearer` tokens! That means that these tokens are furry and like honey... I mean, whoever "bears" (aka holds) the tokens holds the power that they grant. This particular decoder runs client-side (a.k.a. exclusively in the browser), but you should still take extra care to make sure you don't give someone the keys to your kingdom!
 
 [^1]: For authentication.
