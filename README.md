@@ -1,3 +1,9 @@
+<!-- <picture>
+  <source media="(prefers-color-scheme: dark)" srcset="./images/PIC-Horizontal-Logo-White.svg">
+  <source media="(prefers-color-scheme: light)" srcset="https://user-images.githubusercontent.com/25423296/163456779-a8556205-d0a5-45e2-ac17-42d089e3c3f8.png">
+  <img alt="Shows an illustrated sun in light mode and a moon with stars in dark mode." src="https://user-images.githubusercontent.com/25423296/163456779-a8556205-d0a5-45e2-ac17-42d089e3c3f8.png">
+</picture> -->
+
 ![PingOne](images/PingIdentity.svg)
 
 ![PingOne](images/PingOne.svg)
@@ -110,7 +116,8 @@ app.listen(port, () => {
 
 ---
 
-###### *Keep this page open! The values that are required for the .env file in the next step can be found here
+[!NOTE]
+Keep this page open! The values that are required for the .env file in the next step can be found here
 
 ![New PingOne Application Connection - Edit Configuration View](images/p1-app-conn-configuration-redirectURI.svg)
 
