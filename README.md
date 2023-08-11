@@ -116,8 +116,8 @@ app.listen(port, () => {
 
 ---
 
-[!NOTE]
-Keep this page open! The values that are required for the .env file in the next step can be found here
+> [!NOTE]
+> Keep this page open! The values that are required for the .env file in the next step can be found here
 
 ![New PingOne Application Connection - Edit Configuration View](images/p1-app-conn-configuration-redirectURI.svg)
 
