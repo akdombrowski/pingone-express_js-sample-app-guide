@@ -43,6 +43,7 @@ Jump to the last step and experiment with the complete example.
 * [PingOne account](https://www.pingidentity.com/en/try-ping.html)
 * [NodeJS](https://nodejs.org/en)
 * [An IDE](https://code.visualstudio.com/download) or a Text Editor & Terminal
+* Clone, Fork, Download, or connect to an [online sandbox](https://codesandbox.io)
 
 ### Install Dependencies and Start
 
@@ -117,7 +118,7 @@ app.listen(port, () => {
 ---
 
 > [!NOTE]
-> Keep this page open! The values that are required for the .env file in the next step can be found here
+> Keep this Configuration tab open! The values that are required for the .env file in the next step can be found here
 
 ![New PingOne Application Connection - Edit Configuration View](images/p1-app-conn-configuration-redirectURI.svg)
 
