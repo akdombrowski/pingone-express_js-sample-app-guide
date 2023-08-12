@@ -61,7 +61,7 @@ Jump to the last step and experiment with the complete example.
 
 ###### *Make sure you've entered the correct PingOne values from an App Connection into an `.env` file before running. There's an example `.env` file you can duplicate and enter your values
 
-1. Navigate to `localhost:3000` in a browser.
+1. Navigate to `http://localhost:3000` in a browser.
 2. Click [Login]() [^5] to initiate authentication.
 
 ---
