@@ -1,3 +1,9 @@
+<!-- <picture>
+  <source media="(prefers-color-scheme: dark)" srcset="./images/PIC-Horizontal-Logo-White.svg">
+  <source media="(prefers-color-scheme: light)" srcset="https://user-images.githubusercontent.com/25423296/163456779-a8556205-d0a5-45e2-ac17-42d089e3c3f8.png">
+  <img alt="Shows an illustrated sun in light mode and a moon with stars in dark mode." src="https://user-images.githubusercontent.com/25423296/163456779-a8556205-d0a5-45e2-ac17-42d089e3c3f8.png">
+</picture> -->
+
 ![PingOne](images/PingIdentity.svg)
 
 ![PingOne](images/PingOne.svg)
@@ -37,6 +43,7 @@ Jump to the last step and experiment with the complete example.
 * [PingOne account](https://www.pingidentity.com/en/try-ping.html)
 * [NodeJS](https://nodejs.org/en)
 * [An IDE](https://code.visualstudio.com/download) or a Text Editor & Terminal
+* Clone, Fork, Download, or connect to an [online sandbox](https://codesandbox.io)
 
 ### Install Dependencies and Start
 
@@ -110,7 +117,8 @@ app.listen(port, () => {
 
 ---
 
-###### *Keep this page open! The values that are required for the .env file in the next step can be found here
+> [!NOTE]
+> Keep this Configuration tab open! The values that are required for the .env file in the next step can be found here
 
 ![New PingOne Application Connection - Edit Configuration View](images/p1-app-conn-configuration-redirectURI.svg)
 
@@ -374,6 +382,8 @@ You've successfully authenticated a user with PingOne! The returned tokens serve
 ## What's next?
 
 There are several different next steps you might take depending on your use case. Verifying the token(s), sending it in a request to PingOne, using token introspection, submitting a request to the resource server, and more.
+
+But, first you don't want to leave the authorization code in the url. This is done in this app so you can see how it all works and what to expect when you integrate into your own app. You'll want to extract the code and remove it from the url because it can be used to get an access token without other protections if someone happens to get a look at that url or it can block you from getting an access token if someone else attempts to use it and the authorization server invalidates it as a precautionary measure before you get a chance to use it.
 
 During testing, you can [decode the token(s) with this tool here](https://developer.pingidentity.com/en/tools/jwt-decoder.html), verify the signature, check if it's expired, and examine the claims contained within each token. However, remember that these are `Bearer` tokens! That means that these tokens are furry and like honey... I mean, whoever "bears" (aka holds) the tokens holds the power that they grant. This particular decoder runs client-side (a.k.a. exclusively in the browser), but you should still take extra care to make sure you don't give someone the keys to your kingdom!
 
