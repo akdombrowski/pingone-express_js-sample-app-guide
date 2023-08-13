@@ -41,9 +41,10 @@ Jump to the last step and experiment with the complete example.
 #### Prerequisites
 
 * [PingOne account](https://www.pingidentity.com/en/try-ping.html)
+  * (Optional, but recommended) a test PingOne Identity and Environment
 * [NodeJS](https://nodejs.org/en)
 * [An IDE](https://code.visualstudio.com/download) or a Text Editor & Terminal
-* Clone, Fork, Download, or connect to an [online sandbox](https://codesandbox.io)
+* [A modern browser](https://www.google.com/chrome/)
 
 ### Install Dependencies and Start
 
