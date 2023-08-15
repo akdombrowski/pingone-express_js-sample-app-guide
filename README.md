@@ -52,7 +52,7 @@ Jump to the last step and experiment with the complete example.
 <small>
 <strong>*Tips:</strong>
 
-* Use an incognito or private browser, so your session from the admin console isn't used<
+* Use an incognito or private browser, so your session from the admin console isn't used
 * Open your browser's network tab in the developer tools, and enable recording, preserving logs, and continued logging upon navigation (or the equivalent settings in your browser)
 </small>
 
