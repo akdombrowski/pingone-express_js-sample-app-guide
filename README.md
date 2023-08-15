@@ -18,7 +18,7 @@ This is an example of how to integrate [PingOne](https://apidocs.pingidentity.co
 
 ## How to use this repo
 
-a) **Step by Step**
+**A) Step by Step**
 Walking through step by step will guide you from a simple hello world example to a basic app with PingOne authentication using OAuth/OIDC.
 
 * Each step has its own folder with an `app.js` file:
@@ -26,17 +26,17 @@ Walking through step by step will guide you from a simple hello world example to
   * You can run each step with `npm run <step>` from same directory as `package.json`
   * Where `<step> = step0 || step1 || step2 || step3 || step4`
   
-b) **Use Snippets in Your App**
+**B) Use Snippets in Your App**
 Go through the README and/or source code and use what you need in your own app.
 
-c) **Start Experimenting Now**
+**C) Start Experimenting Now**
 Jump to the last step and experiment with the complete example.
 
 * Run the app (after installing) from the same directory as `package.json` using the command: `npm run step4`
 
 ---
 
-# Run the app
+## How to Run the app
 
 #### Prerequisites
 
@@ -46,24 +46,37 @@ Jump to the last step and experiment with the complete example.
 * [An IDE](https://code.visualstudio.com/download) or a Text Editor & Terminal
 * [A modern browser](https://www.google.com/chrome/)
 
-### Install Dependencies and Start
+<small>
+<strong>*Tips:</strong>
 
-###### *You can run each step if you want to experiment*
+* Use an incognito or private browser, so your session from the admin console isn't used<
+* Open your browser's network tab in the developer tools, and enable recording, preserving logs, and continued logging upon navigation (or the equivalent settings in your browser)
+</small>
 
-1. `npm install` [^3]
-2. each step can be run with `npm run` + \<step\>
-   * `npm run step0`
-   * `npm run step1`
-   * `npm run step2`
-   * `npm run step3`
-   * `npm run step4`
+### How to Install Dependencies and Start
 
-## Interaction
+<sup>*Each step includes its own independent version of the app</sup>
 
-###### *Make sure you've entered the correct PingOne values from an App Connection into an `.env` file before running. There's an example `.env` file you can duplicate and enter your values
+1. `npm install` [^3] to install packages needed for the app (only need to run once)
+2. Then, you can run each stage of the app corresponding to a particular step:
+  
+        npm run <step>
+  
+  Where \<step\> is "step" + #
+
+* `npm run step0`
+* `npm run step1`
+* `npm run step2`
+* `npm run step3`
+* `npm run step4`
+
+### What to Expect in the Final Step
+
+###### *Make sure you've entered the correct values from a PingOne Application Connection into an `.env` file before running. There's a template `.env.EXAMPLE` file you can duplicate, rename, and fill in your values
 
 1. Navigate to `http://localhost:3000` in a browser.
-2. Click [Login]() [^5] to initiate authentication.
+2. Click `Login` to initiate authentication.
+3. Browser displays **tokens** inside a JSON response
 
 ---
 
@@ -221,8 +234,11 @@ const responseType = "code";
 
 1. Instead of returning "Hello World" from the root path, we'll modify it to construct our authorization request as a URL and send it as the href of an HTML `a` tag (aka a link).
 2. Once a user navigates their browser to the root path and clicks the login link, they'll be redirected to PingOne to authenticated and authorize any access she wishes to give the client.
-3. Go ahead and try it out!
-4. Tip: Open your browser's dev tools and take a look at what's happening in the Network tab.
+4. If you try it out, after completing authentication,
+
+   **you'll see an error about a missing `callback` page. That's expected!**
+
+   We've yet to set up that path on our server! We'll do that in step 4.
 
 ```javascript
 /**
@@ -270,14 +286,16 @@ app.get("/", (req, res) => {
 Once the user has finished authentication with PingOne, you'll want them to return to your app, right?
 Yes! Of, course! Well, that's exactly what the `redirect_uri` is for! It's sent as a parameter in the authorization request and then in the token request.
 
-1. And, it's how PingOne knows where to send the user after authentication is completed.
-2. For security, the `redirect_uri` must be registered with the authorization server, PingOne, first. This is what you did when you modified the App Connection's config and entered a value for the `redirect_uri`. Nice job, you.
-3. In our app, we'll set up a listener for this path.
-4. In the Authorization Code flow, we expect PingOne to send an authorization code (now, you see why they call it the "Authorization Code flow'? ;)) along with the user to our redirect path.
-5. The code will be in the query parameters of the request from PingOne.
-6. We'll extract this code because we'll need it for the Token Request!
-7. Constructing the token request is a little more involved than the authorization request, but, fear not, we've explained everything right there in the source code!
-8. We send the Token Request, and we expect to get in return... tokens! Both an access token and id token in this case representing the user's authorization and identity information, respectively.
+1. The `redirect_uri` is how PingOne knows where to send the user after authentication is completed.
+   * *For security, the `redirect_uri` must be registered with the authorization server, PingOne, first. This is what you did when you modified the App Connection's config and entered a value for the `redirect_uri`. Nice job, you.
+2. In our app, we'll set up a listener for this path.
+3. In the Authorization Code flow, we expect PingOne to send an authorization code (now, you see why they call it the "Authorization Code flow'? ;)) along with the user to our redirect path.
+4. The code will be in the query parameters of the request from PingOne.
+5. We'll extract this code because we'll need it for the Token Request!
+6. Constructing the token request is a little more involved than the authorization request, but, fear not, we've explained everything right there in the source code!
+7. We send the Token Request, and we expect to get in return... tokens! Both an access token and id token in this case representing the user's authorization and identity information, respectively.
+
+*If this time you didn't have to login, that's because PingOne found a live session and saved you from having to authenticate again. This can be changed, though.
 
 ```javascript
 /**
@@ -391,4 +409,3 @@ During testing, you can [decode the token(s) with this tool here](https://develo
 [^1]: For authentication.
 [^2]: For authorization.
 [^3]: Run the command from the same directory containing the `package.json` file is located.
-[^5]: The `Login` link in this README file is merely illustrative of what you should see in your browser. It doesn't actually (meaningfully) link anywhere. In the app, it initiates the Authorization Code Flow by sending an authorization request (it quite literally <i>is</i> the authorization request and it's submitted to the authorization server, PingOne, by redirected the user via the browser to this url).
