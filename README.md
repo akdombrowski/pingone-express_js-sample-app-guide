@@ -19,6 +19,7 @@ This is an example of how to integrate [PingOne](https://apidocs.pingidentity.co
 ## How to use this repo
 
 **A) Step by Step**
+
 Walking through step by step will guide you from a simple hello world example to a basic app with PingOne authentication using OAuth/OIDC.
 
 * Each step has its own folder with an `app.js` file:
@@ -27,9 +28,11 @@ Walking through step by step will guide you from a simple hello world example to
   * Where `<step> = step0 || step1 || step2 || step3 || step4`
   
 **B) Use Snippets in Your App**
+
 Go through the README and/or source code and use what you need in your own app.
 
 **C) Start Experimenting Now**
+
 Jump to the last step and experiment with the complete example.
 
 * Run the app (after installing) from the same directory as `package.json` using the command: `npm run step4`
