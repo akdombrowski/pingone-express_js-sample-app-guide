@@ -45,7 +45,7 @@ Jump to the last step and experiment with the complete example.
 
 * [PingOne account](https://www.pingidentity.com/en/try-ping.html)
   * (Optional, but recommended) a test PingOne Identity and Environment
-* [NodeJS](https://nodejs.org/en)
+* [NodeJS](https://nodejs.org/en) (v2.0+)
 * [An IDE](https://code.visualstudio.com/download) or a Text Editor & Terminal
 * [A modern browser](https://www.google.com/chrome/)
 
