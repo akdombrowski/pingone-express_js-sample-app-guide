@@ -293,7 +293,12 @@ Yes! Of, course! Well, that's exactly what the `redirect_uri` is for! It's sent 
    * *For security, the `redirect_uri` must be registered with the authorization server, PingOne, first. This is what you did when you modified the App Connection's config and entered a value for the `redirect_uri`. Nice job, you.
 2. In our app, we'll set up a listener for this path.
 3. In the Authorization Code flow, we expect PingOne to send an authorization code (now, you see why they call it the "Authorization Code flow'? ;)) along with the user to our redirect path.
-4. The code will be in the query parameters of the request from PingOne.
+4. The Authorization Code will be in the query parameters of the request from PingOne.
+
+    It should look something like this:
+
+        http://localhost:3000/callback?code=1200111a-e3f5-0000-0000-1116a5443e33
+
 5. We'll extract this code because we'll need it for the Token Request!
 6. Constructing the token request is a little more involved than the authorization request, but, fear not, we've explained everything right there in the source code!
 7. We send the Token Request, and we expect to get in return... tokens! Both an access token and id token in this case representing the user's authorization and identity information, respectively.
