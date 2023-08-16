@@ -75,21 +75,21 @@ const clientSecret = process.env.PINGONE_CLIENT_SECRET;
 const appBaseURL = process.env.APP_BASE_URL;
 
 /**
- * Some constants we'll need for an OAuth Authorization Code flow.
- * We'll also add Authentication with OIDC.
+ * Some constants we'll need for an OAuth/OIDC Authorization Code flow (aka how
+ * we'll authenticate users).
  */
-// This app's base origin (e.g., http://localhost:3000)
+// This app's base origin
 const appBaseOrigin = appBaseURL + ":" + port;
 // PingOne authorize endpoint
 const authorizeEndpoint = "/as/authorize";
 // PingOne token endpoint
 const tokenEndpoint = "/as/token";
 // The url path made available for when the user is redirected back from the
-// authorization server, PingOne
+// authorization server, PingOne.
 const callbackPath = "/callback";
 // The full url where the user is redirected after authenticating/authorizing
-// with PingOne (e.g., http://localhost:3000/callback)
-const redirectURI = appBaseOrigin + callbackPath;
+// with PingOne.
+const redirectURI = appBaseURL + ":" + port + callbackPath;
 // Scopes specify what kind of access the client is requesting from the user.
 // These are some standard OIDC scopes.
 //   openid - signals an OIDC request; default resource on oauth/oidc app
@@ -113,10 +113,35 @@ const responseType = "code";
  * Root url - "http://localhost:3000/" (or without the explicit "/" =>
  * "http://localhost:3000")
  *
- * Navigating to the root path should render "Hello World!" in your browser.
+ * Creates and serves the authorization request as a plain link for the user to
+ * click and start authentication.
+ *
+ * No longer will respond with "Hello World!"
+ *
+ * When someone navigates their browser, or user agent, to the root path, "/", a
+ * basic link with the text "Login" is rendered. Clicking the link will redirect
+ * the user to PingOne with the authorization request parameters. The user is
+ * then prompted to authenticate.
  */
 app.get("/", (req, res) => {
-  res.send("Hello Step1!");
+  // Authorization server's authorize endpoint's url path
+  // e.g.,
+  // "z2345678-0000-456c-a657-3a21fc9ece7e/as/authorize"
+  const authzPath = envID + authorizeEndpoint;
+  // authorize request starting with the url origin and path.
+  const authzReq = new URL(authzPath, authBaseURL);
+
+  // Add query parameters to define the authorize request
+  authzReq.searchParams.append("redirect_uri", redirectURI);
+  authzReq.searchParams.append("client_id", clientID);
+  authzReq.searchParams.append("scope", scopes);
+  authzReq.searchParams.append("response_type", responseType);
+
+  // Send a link to the browser to render with the text "Login".
+  // When the link is clicked the user is redirected to the authorization
+  // server, PingOne, at the authorize endpoint. The query parameters are read
+  // by PingOne and combine to make the authorization request.
+  res.status(200).send("<a href=" + authzReq.toString() + ">Login</a>");
 });
 
 /**
@@ -125,6 +150,6 @@ app.get("/", (req, res) => {
  */
 app.listen(port, () => {
   console.log(
-    `Step 1 - The PingOne sample Express app has started listening on ${appBaseURL}:${port}`
+    `Step 2 - The PingOne sample Express app has started listening on ${appBaseURL}:${port}`
   );
 });

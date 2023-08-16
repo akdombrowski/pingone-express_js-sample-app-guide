@@ -75,8 +75,8 @@ const clientSecret = process.env.PINGONE_CLIENT_SECRET;
 const appBaseURL = process.env.APP_BASE_URL;
 
 /**
- * Some constants we'll need for an OAuth/OIDC Authorization Code flow (aka how
- * we'll authenticate users).
+ * Some constants we'll need for an OAuth Authorization Code flow.
+ * We'll also add Authentication with OIDC.
  */
 // This app's base origin
 const appBaseOrigin = appBaseURL + ":" + port;
@@ -89,7 +89,7 @@ const tokenEndpoint = "/as/token";
 const callbackPath = "/callback";
 // The full url where the user is redirected after authenticating/authorizing
 // with PingOne.
-const redirectURI = appBaseURL + ":" + port + callbackPath;
+const redirectURI = appBaseOrigin + callbackPath;
 // Scopes specify what kind of access the client is requesting from the user.
 // These are some standard OIDC scopes.
 //   openid - signals an OIDC request; default resource on oauth/oidc app
@@ -142,6 +142,93 @@ app.get("/", (req, res) => {
   // server, PingOne, at the authorize endpoint. The query parameters are read
   // by PingOne and combine to make the authorization request.
   res.status(200).send("<a href=" + authzReq.toString() + ">Login</a>");
+});
+
+/**
+ * Callback url - "http://localhost:3000/callback"
+ *
+ * The path for the redirect_uri. When the user is redirected from PingOne, the
+ * authorization code is extracted from the query parameters, then the token
+ * request is constructed and submitted for access and id tokens.
+ *
+ * This path isn't meant to be manually navigated to. It serves as the location
+ * for the user to be redirected to after interacting with PingOne, the
+ * authorization server. If the user successfully authenticated/authorized with
+ * PingOne, they'll be sent to here with an authorization code in the query
+ * parameters which looks like (?code=<random-chars>). In this sample, the code
+ * is left in the URL, so you can see what it looks like and how it's sent here,
+ * but, in practice, you'll want to limit exposure to this value.
+ */
+app.get(callbackPath, async (req, res) => {
+  // Try to parse the authorization code from the query parameters of the url.
+  const authzCode = req.query?.code;
+
+  // Send error if the authorization code was not found.
+  if (!authzCode) {
+    const errorMsg =
+      "Expected authorization code in query parameters.\n" + req.url;
+    console.error(errorMsg);
+    res.status(404).send("<a href='/'>Return home</a>");
+  }
+
+  /**
+   * Set headers for token request.
+   */
+  const headers = new Headers();
+  // Content type
+  headers.append("Content-Type", "application/x-www-form-urlencoded");
+  // Authorization header
+  // Calculated as the result of base64 encoding the string:
+  // (clientID + ":" + clientSecret) and appended to "Basic ". e.g., "Basic
+  // 0123456lNzQtZT3Mi00ZmM0WI4ZWQtY2Q5NTMwTE0123456=="
+  const authzHeader =
+    "Basic " + Buffer.from(clientID + ":" + clientSecret).toString("base64");
+  headers.append("Authorization", authzHeader);
+
+  // Use URLSearchParams because we're using
+  // "application/x-www-form-urlencoded".
+  const urlBodyParams = new URLSearchParams();
+  // The grant type is the OAuth 2.0/OIDC grant type that the PingOne app
+  // connection is configured to accept and was used for the authorization
+  // request. Remember, this example is set up for Authorization Code.
+  urlBodyParams.append("grant_type", grantType);
+  // Include the authorization code that was extracted from the url.
+  urlBodyParams.append("code", authzCode);
+  // The redirect_uri is the same as what was sent in the authorize request. It
+  // must be registered with PingOne by configuring the app connection.
+  urlBodyParams.append("redirect_uri", redirectURI);
+
+  // Options to supply the fetch function.
+  const requestOptions = {
+    method: "POST",
+    headers: headers,
+    body: urlBodyParams,
+  };
+
+  // PingOne token endpoint
+  const tokenURL = authBaseURL + "/" + envID + tokenEndpoint;
+
+  // Make the exchange for tokens by calling the /token endpoint and sending the
+  // authorization code.
+  try {
+    // Send the token request and get the response body in JSON format.
+    const response = await fetch(tokenURL, requestOptions);
+    if (response.ok) {
+      const result = await response.json();
+      // For demo purposes, this forwards the json response from the token
+      // endpoint.
+      res.status(200).json(result);
+    } else {
+      res.status(response.status).send(response.json());
+    }
+  } catch (error) {
+    // Handle error
+
+    // For demo purposes, log the error to the server console and send the
+    // error as a response.
+    console.log(error);
+    res.status(500).send(error);
+  }
 });
 
 /**

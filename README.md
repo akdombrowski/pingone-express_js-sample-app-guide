@@ -26,6 +26,7 @@ This is an example of how to integrate [PingOne](https://apidocs.pingidentity.co
   * a **PingOne Application Connection**
     * created using the `OIDC Web App` template
     * add the Redirect URI: `http://localhost:3000/callback`
+    * don't forget to toggle it on!
 
 ![New PingOne Application Connection - Edit Configuration View](images/p1-app-conn-configuration-redirectURI.svg)
 
@@ -34,16 +35,12 @@ This is an example of how to integrate [PingOne](https://apidocs.pingidentity.co
 ## Create a `.env` File
 
 > [!NOTE]
-> The values for the environment file can be found on the Configuration tab of your PingOne Application Connection
+> The values for the environment file can be found on the Overview or the Configuration tab of your PingOne Application Connection
 
 1. Duplicate or copy the `.env.EXAMPLE` template file from this repo and rename it `.env`
-2. Fill in the values from the PingOne App Connection (on the Configuration tab)
+2. Fill in the configuration values from the PingOne App Connection
 
 ```shell
-# These values can be found on your 
-# Application Connection's Configuration tab 
-# in the PingOne admin console
-
 # Auth base url is dependent upon region
 # e.g.,
 # NA - https://auth.pingone.com
@@ -53,11 +50,14 @@ This is an example of how to integrate [PingOne](https://apidocs.pingidentity.co
 PINGONE_AUTH_BASE_URL=https://auth.pingone.com
 
 # PingOne Environment ID
-PINGONE_ENVIRONMENT_ID=#z2345678-0000-456c-a657-3a21fc9ece7e
+#z2345678-0000-456c-a657-3a21fc9ece7e
+PINGONE_ENVIRONMENT_ID=
 
 # PingOne App Connection Configuration Info
-PINGONE_CLIENT_ID=#x7654321-0000-4fc4-b8ed-1441b767e78f
-PINGONE_CLIENT_SECRET=########-####-####-####-############
+#x7654321-0000-4fc4-b8ed-1441b767e78f
+PINGONE_CLIENT_ID=
+#########-####-####-####-############
+PINGONE_CLIENT_SECRET=
 
 # The base path where this app is running
 # Express defaults to localhost, update here otherwise
@@ -125,7 +125,7 @@ app.listen(port, () => {
 
 ---
 
-## Step 1 - Register your app with PingOne
+## Step 1 - Preparing the App
 
 `./step1/app.js`
 
@@ -145,7 +145,7 @@ const clientSecret = process.env.PINGONE_CLIENT_SECRET;
 const appBaseURL = process.env.APP_BASE_URL;
 ```
 
-#### Add some constants from for performing OAuth/OIDC authentication
+#### Add some constants for performing OAuth/OIDC authentication with PingOne
 
 ```javascript
 // This app's base origin (e.g., http://localhost:3000)
@@ -182,7 +182,7 @@ const responseType = "code";
 
 ---
 
-## Step 3 - Modifying the Root Path Logic
+## Step 2 - Modifying the Root Path Logic
 
 `./step3/app.js`
 
@@ -190,7 +190,7 @@ const responseType = "code";
 2. Once a user navigates their browser to the root path and clicks the login link, they'll be redirected to PingOne to authenticated and authorize any access she wishes to give the client.
 4. If you try it out, after completing authentication,
 
-   **you'll see an error about a missing `callback` page. That's expected!**
+   > **you'll see an error about a missing `callback` page. That's expected!**
 
    We've yet to set up that path on our server! We'll do that in step 4.
 
@@ -233,7 +233,7 @@ app.get("/", (req, res) => {
 
 ---
 
-## Step 4 - Setting up the Redirect Path
+## Step 3 - Setting up the Redirect Path
 
 `./step4/app.js`
 
@@ -254,7 +254,7 @@ Yes! Of, course! Well, that's exactly what the `redirect_uri` is for! It's sent 
 6. Constructing the token request is a little more involved than the authorization request, but, fear not, we've explained everything right there in the source code!
 7. We send the Token Request, and we expect to get in return... tokens! Both an access token and id token in this case representing the user's authorization and identity information, respectively.
 
-*If this time you didn't have to login, that's because PingOne found a live session and saved you from having to authenticate again. This can be changed, though.
+*If this time you didn't have to login, PingOne likely found a live session and saved you from having to authenticate again. This can be changed, though.
 
 ```javascript
 /**

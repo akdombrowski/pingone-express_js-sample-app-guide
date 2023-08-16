@@ -39,7 +39,6 @@
     "step0": "node ./step0/app.js",
     "step1": "node ./step1/app.js",
     "step2": "node ./step2/app.js",
-    "step3": "node ./step3/app.js",
-    "step4": "node ./step4/app.js"
+    "step3": "node ./step3/app.js"
   }
 }
