@@ -88,6 +88,23 @@ Run from the top level directory:
 
 # Walkthrough Guide
 
+## Running the App
+>Each step includes its own isolated version of the app
+
+After you've installed everything, you can run a particular stage of the app corresponding to a step with the command:
+  
+        npm run <step>
+  
+  Where \<step\> is "step" + #
+
+* `npm run step0`
+* `npm run step1`
+* `npm run step2`
+* `npm run step3`
+* `npm run step4`
+
+> *Run the command from the top level directory.
+
 ## Step 0 - A Functioning Express server
 
 `./step0/app.js`
