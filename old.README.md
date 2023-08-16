@@ -15,80 +15,77 @@
 This is an example of how to integrate [PingOne](https://apidocs.pingidentity.com/pingone/main/v1/api/) with a simple [Express](https://expressjs.com/) app using the [OIDC](https://openid.net/specs/openid-connect-core-1_0.html#CodeFlowAuth)[^1] / [OAuth 2.0](https://www.rfc-editor.org/rfc/rfc6749#section-4.1)[^2] Authorization Code Flow.
 
 ---
+
+## How to use this repo
+
+**A) Step by Step**
+
+Walking through step by step will guide you from a simple hello world example to a basic app with PingOne authentication using OAuth/OIDC.
+
+* Each step has its own folder with an `app.js` file:
+  * e.g., `step0/app.js`, `step1/app.js`, and so on...
+  * You can run each step with `npm run <step>` from same directory as `package.json`
+  * Where `<step> = step0 || step1 || step2 || step3 || step4`
+  
+**B) Use Snippets in Your App**
+
+Go through the README and/or source code and use what you need in your own app.
+
+**C) Start Experimenting Now**
+
+Jump to the last step and experiment with the complete example.
+
+* Run the app (after installing) from the same directory as `package.json` using the command: `npm run step4`
+
 ---
 
-## Prerequisites
+## How to Run the app
 
+#### Prerequisites
+
+* [PingOne account](https://www.pingidentity.com/en/try-ping.html)
+  * (Optional, but recommended) a test PingOne Identity and Environment
 * [NodeJS](https://nodejs.org/en) (v2.0+)
-* [A Modern Browser](https://www.google.com/chrome/)
-* [A PingOne Account](https://www.pingidentity.com/en/try-ping.html) with
-  * a test **PingOne Environment** with an **Identity/User** created there
-  * a **PingOne Application Connection**
-    * created using the `OIDC Web App` template
-    * add the Redirect URI: `http://localhost:3000/callback`
+* [An IDE](https://code.visualstudio.com/download) or a Text Editor & Terminal
+* [A modern browser](https://www.google.com/chrome/)
 
-![New PingOne Application Connection - Edit Configuration View](images/p1-app-conn-configuration-redirectURI.svg)
+<small>
+<strong>*Tips:</strong>
 
----
+* Use an incognito or private browser, so your session from the admin console isn't used
+* Open your browser's network tab in the developer tools, and enable recording, preserving logs, and continued logging upon navigation (or the equivalent settings in your browser)
+</small>
 
-## Create a `.env` File
+### How to Install Dependencies and Start
 
-> [!NOTE]
-> The values for the environment file can be found on the Configuration tab of your PingOne Application Connection
+<sup>*Each step includes its own independent version of the app</sup>
 
-1. Duplicate or copy the `.env.EXAMPLE` template file from this repo and rename it `.env`
-2. Fill in the values from the PingOne App Connection (on the Configuration tab)
+1. `npm install` [^3] to install packages needed for the app (only need to run once)
+2. Then, you can run each stage of the app corresponding to a particular step:
+  
+        npm run <step>
+  
+  Where \<step\> is "step" + #
 
-```shell
-# These values can be found on your 
-# Application Connection's Configuration tab 
-# in the PingOne admin console
+* `npm run step0`
+* `npm run step1`
+* `npm run step2`
+* `npm run step3`
+* `npm run step4`
 
-# Auth base url is dependent upon region
-# e.g.,
-# NA - https://auth.pingone.com
-# CA - https:/auth.pingone.ca
-# EU - https:/auth.pingone.eu
-# APAC - https:/auth.pingone.asia
-PINGONE_AUTH_BASE_URL=https://auth.pingone.com
+### What to Expect in the Final Step
 
-# PingOne Environment ID
-PINGONE_ENVIRONMENT_ID=#z2345678-0000-456c-a657-3a21fc9ece7e
+###### *Make sure you've entered the correct values from a PingOne Application Connection into an `.env` file before running. There's a template `.env.EXAMPLE` file you can duplicate, rename, and fill in your values
 
-# PingOne App Connection Configuration Info
-PINGONE_CLIENT_ID=#x7654321-0000-4fc4-b8ed-1441b767e78f
-PINGONE_CLIENT_SECRET=########-####-####-####-############
-
-# The base path where this app is running
-# Express defaults to localhost, update here otherwise
-# The Hello world example uses port 3000 (it's configured in app.js)
-APP_BASE_URL=http://localhost
-```
-
----
-
-## Install Dependencies
-
-Run from the top level directory:
-
-    npm install 
-
----
-
-> #### Tips
->
-> * Open an incognito or private window so that no existing sessions are used
-> * Open your browser's network tab in the developer tools
->   * enable recording
->   * preserve logs
->   * continue logging upon navigation
->   <small>*(how and where to configure these settings will depend on your browser)</small>
+1. Navigate to `http://localhost:3000` in a browser.
+2. Click `Login` to initiate authentication.
+3. Browser displays **tokens** inside a JSON response
 
 ---
 
 # Walkthrough Guide
 
-## Step 0 - A Functioning Express server
+## Step 0 - A functioning Express server
 
 `./step0/app.js`
 
@@ -129,7 +126,53 @@ app.listen(port, () => {
 
 `./step1/app.js`
 
-#### Pull values from the `.env` into our code
+1. In the [PingOne console](https://pingidentity.com/signon), navigate to `Connections > Applications` and create a new **PingOne App Connection** using the *OIDC Web App* template. This template is useful when your app has a backend/server.
+2. On the ***Configuration*** tab, add the **Redirect URI**:
+   `http://localhost:3000/callback` .
+
+   We'll see this come up in a later step, but here we tell PingOne that this is a valid url to redirect the user back to.
+
+---
+
+> [!NOTE]
+> Keep this Configuration tab open! The values that are required for the .env file in the next step can be found here
+
+![New PingOne Application Connection - Edit Configuration View](images/p1-app-conn-configuration-redirectURI.svg)
+
+---
+
+3. Duplicate or copy the `.env.EXAMPLE` file and rename it `.env`.
+4. Fill in the corresponding values from the PingOne App Connection you just created (the values can be found on the configuration tab).
+
+\***Protect your Client Secret** - *In a traditional Web App, where we have a backend/server to work with, we just need to make sure the secret doesn't get exposed through the frontend. This example makes use of a `.env` file that is accessed only on the server-side and only when needed. This helps keep the secret a secret without hardcoding the secret in the source code.*
+
+```shell
+# These values can be found on your 
+# Application Connection's Configuration tab 
+# in the PingOne admin console
+
+# Auth base url is dependent upon region
+# e.g.,
+# NA - https://auth.pingone.com
+# CA - https:/auth.pingone.ca
+# EU - https:/auth.pingone.eu
+# APAC - https:/auth.pingone.asia
+PINGONE_AUTH_BASE_URL=https://auth.pingone.com
+
+# PingOne Environment ID
+PINGONE_ENVIRONMENT_ID=#z2345678-0000-456c-a657-3a21fc9ece7e
+
+# PingOne App Connection Configuration Info
+PINGONE_CLIENT_ID=#x7654321-0000-4fc4-b8ed-1441b767e78f
+PINGONE_CLIENT_SECRET=########-####-####-####-############
+
+# The base path where this app is running
+# Express defaults to localhost, update here otherwise
+# The Hello world example uses port 3000 (it's configured in app.js)
+APP_BASE_URL=http://localhost
+```
+
+In the source code, we'll pull these values into variables using the dotenv package with the `process.env.<variable_name>` syntax:
 
 ```javascript
 // PingOne Auth (authentication/authorization) base url
@@ -145,7 +188,13 @@ const clientSecret = process.env.PINGONE_CLIENT_SECRET;
 const appBaseURL = process.env.APP_BASE_URL;
 ```
 
-#### Add some constants from for performing OAuth/OIDC authentication
+---
+
+## Step 2 - Add Required Constants
+
+`./step2/app.js`
+
+1. This step adds some constants that'll be needed for our particular configuration and type of authentication/authorization being performed, i.e., PingOne as the authorization server and using the Authorization Code flow.
 
 ```javascript
 // This app's base origin (e.g., http://localhost:3000)
@@ -367,3 +416,4 @@ During testing, you can [decode the token(s) with this tool here](https://develo
 
 [^1]: For authentication.
 [^2]: For authorization.
+[^3]: Run the command from the same directory containing the `package.json` file is located.

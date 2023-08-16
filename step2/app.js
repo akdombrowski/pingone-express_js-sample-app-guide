@@ -116,7 +116,7 @@ const responseType = "code";
  * Navigating to the root path should render "Hello World!" in your browser.
  */
 app.get("/", (req, res) => {
-  res.send("Hello World!");
+  res.send("Hello Step1!");
 });
 
 /**
@@ -125,6 +125,6 @@ app.get("/", (req, res) => {
  */
 app.listen(port, () => {
   console.log(
-    `Step 2 - The PingOne sample Express app has started listening on ${appBaseURL}:${port}`
+    `Step 1 - The PingOne sample Express app has started listening on ${appBaseURL}:${port}`
   );
 });
