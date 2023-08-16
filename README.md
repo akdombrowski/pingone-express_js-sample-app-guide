@@ -184,7 +184,7 @@ const responseType = "code";
 
 ## Step 2 - Modifying the Root Path Logic
 
-`./step3/app.js`
+`./step2/app.js`
 
 1. Instead of returning "Hello World" from the root path, we'll modify it to construct our authorization request as a URL and send it as the href of an HTML `a` tag (aka a link).
 2. Once a user navigates their browser to the root path and clicks the login link, they'll be redirected to PingOne to authenticated and authorize any access she wishes to give the client.
@@ -235,7 +235,7 @@ app.get("/", (req, res) => {
 
 ## Step 3 - Setting up the Redirect Path
 
-`./step4/app.js`
+`./step3/app.js`
 
 Once the user has finished authentication with PingOne, you'll want them to return to your app, right?
 Yes! Of, course! Well, that's exactly what the `redirect_uri` is for! It's sent as a parameter in the authorization request and then in the token request.
