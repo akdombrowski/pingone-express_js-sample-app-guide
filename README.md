@@ -28,7 +28,7 @@ This is an example of how to integrate [PingOne](https://apidocs.pingidentity.co
     * add the Redirect URI: `http://localhost:3000/callback`
     * don't forget to toggle it on!
 
-![New PingOne Application Connection - Edit Configuration View](images/p1-app-conn-configuration-redirectURI.svg)
+<img src="images/p1-app-conn-configuration-redirectURI.svg" width="50%" padding="0 25% 0 0" />
 
 ---
 
