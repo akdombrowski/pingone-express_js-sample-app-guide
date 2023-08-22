@@ -12,9 +12,9 @@
 
 ###### Express, Server, NodeJS, OAuth 2.0, OIDC, Authz Code Grant Type, Auth, PingOne
 
-This guide illustrates the steps to integrate* a [PingOne authentication experience](https://apidocs.pingidentity.com/pingone/main/v1/api/#pingone-authentication-and-authorization) into a traditional web app. [Express](https://expressjs.com/) is used for the server which will also serve the UI with some basic HTML.
+This guide illustrates the steps to integrate\* a [PingOne authentication experience](https://apidocs.pingidentity.com/pingone/main/v1/api/#pingone-authentication-and-authorization) into a traditional web app. [Express](https://expressjs.com/) builds the server which will also serve up some basic HTML UI.
 
-<small>*Using [OIDC Authentication using the Authorization Code Flow](https://openid.net/specs/openid-connect-core-1_0.html#CodeFlowAuth)[^1]</small>
+<small>\*Using [OIDC Authentication using the Authorization Code Flow](https://openid.net/specs/openid-connect-core-1_0.html#CodeFlowAuth)[^1]</small>
 
 ---
 
@@ -22,41 +22,45 @@ This guide illustrates the steps to integrate* a [PingOne authentication experie
 
 ## Prerequisites
 
-<!-->Table seems cleaner, no?<-->
+<!-- Table seems cleaner? -->
 
-|                    |                                                                                                          |
-| ------------------ | -------------------------------------------------------------------------------------------------------- |
-| **NodeJS**         | min. [v2.0](https://nodejs.org/en "Download NodeJS")                                                     |
-| **Modern Browser** | e.g., [Chrome](https://www.google.com/chrome/ "Download Chrome")                                         |
-| **PingOne**        | [Environment, Identity, and App Connection*](https://www.pingidentity.com/en/try-ping.html "Free Trial") |
+|                    |                                                                                                           |
+| ------------------ | --------------------------------------------------------------------------------------------------------- |
+| **NodeJS**         | min. [v2.0](https://nodejs.org/en "Download NodeJS")                                                      |
+| **Modern Browser** | e.g., [Chrome](https://www.google.com/chrome/ "Download Chrome")                                          |
+| **PingOne**        | [Environment, Identity, and App Connection\*](https://www.pingidentity.com/en/try-ping.html "Free Trial") |
 
+<!-- Tried including the below in the table but it didn't look right -->
 
-<!-->Tried including the below in the table but it didn't look right<-->
-
-> [!IMPORTANT] 
+> [!IMPORTANT]
+>
 > **PingOne App Connection**
+>
 > - created using the `OIDC Web App` template
 > - add the Redirect URI: `http://localhost:3000/callback`
 > - don't forget to toggle it on!
 
-<!--><-->
+<!-- -->
 
-<!-->Than bulleted list?<-->
+<!-- Than bulleted list? -->
 
-<!-- - [NodeJS](https://nodejs.org/en) (v2.0+)
+<!--
+[NodeJS](https://nodejs.org/en) (v2.0+)
 - [A Modern Browser](https://www.google.com/chrome/)
 - [A PingOne Account](https://www.pingidentity.com/en/try-ping.html) with
   - a test **PingOne Environment** with an **Identity/User** created there
   - a **PingOne Application Connection**
     - created using the `OIDC Web App` template
     - add the Redirect URI: `http://localhost:3000/callback`
-    - don't forget to toggle it on! -->
+    - don't forget to toggle it on!
+-->
 
 <img src="images/p1-app-conn-configuration-redirectURI.svg" width="75%"/>
 
 ## Create `.env` from `.env.Example` Template
 
 > [!NOTE]
+> 
 > The values for the environment file can be found on the Overview or the Configuration tab of your PingOne Application Connection
 
 1. Duplicate the `.env.EXAMPLE` template file and rename the copy `.env`
@@ -91,7 +95,7 @@ APP_BASE_URL=http://localhost
 
 ## Install Dependencies
 
-Run `npm install` from the top level directory of the repo: 
+Run `npm install` from the top level directory of the repo:
 
 ---
 
@@ -218,6 +222,7 @@ const responseType = "code";
 `npm run step2`
 
 > [!IMPORTANT]
+> 
 > You *will* see an error if you run this and authenticate (or a live session is found). **This error is expected!** We'll fix that in the next step when we set up the path for the redirect uri on our app.
 
 1. Instead of returning "Hello World" from the root path, we'll modify it to construct our authorization request as a URL and send it as a clickable "Login" link.
