@@ -12,7 +12,7 @@
 
 ###### Express, Server, NodeJS, OAuth 2.0, OIDC, Authz Code Grant Type, Auth, PingOne
 
-This guide illustrates the steps to integrate\* a [PingOne authentication experience](https://apidocs.pingidentity.com/pingone/main/v1/api/#pingone-authentication-and-authorization) into a traditional web app. [Express](https://expressjs.com/) builds the server which will also serve up some basic HTML UI.
+This guide illustrates the steps to integrate\* a [PingOne authentication experience](https://apidocs.pingidentity.com/pingone/main/v1/api/#pingone-authentication-and-authorization) into a traditional web app. We'll start with a basic [Express](https://expressjs.com/) server which will serve some basic HTML for a simplified UI.
 
 <small>\*Using [OIDC Authentication using the Authorization Code Flow](https://openid.net/specs/openid-connect-core-1_0.html#CodeFlowAuth)[^1]</small>
 
@@ -22,15 +22,11 @@ This guide illustrates the steps to integrate\* a [PingOne authentication experi
 
 ## Prerequisites
 
-<!-- Table seems cleaner? -->
-
 |                    |                                                                                                           |
 | ------------------ | --------------------------------------------------------------------------------------------------------- |
-| **NodeJS**         | min. [v2.0](https://nodejs.org/en "Download NodeJS")                                                      |
-| **Modern Browser** | e.g., [Chrome](https://www.google.com/chrome/ "Download Chrome")                                          |
-| **PingOne**        | [Environment, Identity, and App Connection\*](https://www.pingidentity.com/en/try-ping.html "Free Trial") |
-
-<!-- Tried including the below in the table but it didn't look right -->
+| **NodeJS**         | Minimum [v2.0](https://nodejs.org/en "Download NodeJS")                                                      |
+| **Modern Browser** | Such as [Chrome](https://www.google.com/chrome/ "Download Chrome")                                          |
+| **PingOne**        | [Environment, Identity, and App Connection](https://www.pingidentity.com/en/try-ping.html "Free Trial") |
 
 > [!IMPORTANT]
 >
@@ -38,29 +34,14 @@ This guide illustrates the steps to integrate\* a [PingOne authentication experi
 >
 > - created using the `OIDC Web App` template
 > - add the Redirect URI: `http://localhost:3000/callback`
-> - don't forget to toggle it on!
-
-<!-- -->
-
-<!-- Than bulleted list? -->
-
-<!--
-[NodeJS](https://nodejs.org/en) (v2.0+)
-- [A Modern Browser](https://www.google.com/chrome/)
-- [A PingOne Account](https://www.pingidentity.com/en/try-ping.html) with
-  - a test **PingOne Environment** with an **Identity/User** created there
-  - a **PingOne Application Connection**
-    - created using the `OIDC Web App` template
-    - add the Redirect URI: `http://localhost:3000/callback`
-    - don't forget to toggle it on!
--->
+> - don't forget to enable it!
 
 <img src="images/p1-app-conn-configuration-redirectURI.svg" width="75%"/>
 
 ## Create `.env` from `.env.Example` Template
 
 > [!NOTE]
-> 
+>
 > The values for the environment file can be found on the Overview or the Configuration tab of your PingOne Application Connection
 
 1. Duplicate the `.env.EXAMPLE` template file and rename the copy `.env`
@@ -114,19 +95,18 @@ Run `npm install` from the top level directory of the repo:
 
 ###### Try running the app at each step to check if the behavior matches your expectations
 
-<small>* First run `npm install`</small>
-<small>* Run the command from the top level directory.</small>
+* <small>Before anything, run `npm install`. You only need to do this once.</small>
+* <small>Run the command from the root of the repo.</small>
 
 ## Step 0 - Express Server
 
 `npm run step0`
 
-We'll start with a simple working example with [Express's Hello World example](https://expressjs.com/en/starter/hello-world.html)!
-Make sure this is working to rule out any environment issues as all you need is:
+We'll start with a simple working web app with [Express's Hello World example](https://expressjs.com/en/starter/hello-world.html)!
+Make sure this is working to rule out any environment issues. all you need is:
 
-1. `NodeJS`
-2. `npm install`
-3. `npm run step0`
+1. `npm run step0`
+2. Then, open an incognito/private browser window and navigate to [`http://localhost:3000`](http://localhost:3000 "http://localhost:3000"). You should see "Hello World".
 
 <small>\*Some comments have been added for extra clarity</small>
 
@@ -222,7 +202,7 @@ const responseType = "code";
 `npm run step2`
 
 > [!IMPORTANT]
-> 
+>
 > You *will* see an error if you run this and authenticate (or a live session is found). **This error is expected!** We'll fix that in the next step when we set up the path for the redirect uri on our app.
 
 1. Instead of returning "Hello World" from the root path, we'll modify it to construct our authorization request as a URL and send it as a clickable "Login" link.
@@ -274,15 +254,15 @@ app.get("/", (req, res) => {
 1. The `redirect_uri` is where PingOne sends the user after authentication is completed.
     - *For security*, the `redirect_uri` must be registered with the authorization server, PingOne, first. This is what you did when you modified the App Connection's config and entered a value for the `redirect_uri`. Nice job, you.
 2. We'll add the `redirect_uri` as a new path on our app/server.
-   * In the *Authorization Code flow*, PingOne redirects the user to the `redirect_uri` *with* an **authorization code** (now, you see why they call it the "Authorization Code flow'? ;))
+   - In the *Authorization Code flow*, PingOne redirects the user to the `redirect_uri` *with* an **authorization code** (now, you see why they call it the "Authorization Code flow'? ;))
 3. We can extract the Authorization Code from the query parameters of the url.[^2]
 
     It should look something like this:
 
         http://localhost:3000/callback?code=1200111a-e3f5-0000-0000-1116a5443e33
 
-4. We use the code to exchange for tokens with a Token Request at the `/token` endpoint and expect, in return, . . . tokens! 
-   * Both an *access token* and *id token* in this case representing the user's authorization and identity information, respectively.
+4. We use the code to exchange for tokens with a Token Request at the `/token` endpoint and expect, in return, . . . tokens!
+   - Both an *access token* and *id token* in this case representing the user's authorization and identity information, respectively.
 
 <small>\*If this time you didn't have to login, PingOne found a live session! However, you can modify this behavior.</small>
 
@@ -375,7 +355,7 @@ app.get(callbackPath, async (req, res) => {
 });
 ```
 
-###### Congrats! You did it!
+###### Congrats! You did it
 
 You've just walked through the steps to trigger authenticated a user with PingOne! The returned tokens serve as your proof.
 
@@ -407,9 +387,9 @@ The authorization code *can* be used to get an access token in (additional prote
 
 <br />
 
-During testing, you can decode the token(s) with a [free Ping Identity tool](https://developer.pingidentity.com/en/tools/jwt-decoder.html), verify the signature, check if it's expired, and examine the claims contained within each token. 
+During testing, you can decode the token(s) with a [free Ping Identity tool](https://developer.pingidentity.com/en/tools/jwt-decoder.html), verify the signature, check if it's expired, and examine the claims contained within each token.
 
-###### However, remember that these are `Bearer` tokens!** 
+###### However, remember that these are `Bearer` tokens!**
 
 That means that these tokens are furry and like honey... I mean, whoever "bears" (aka holds) the tokens holds the power that they grant. This particular decoder runs client-side (a.k.a. exclusively in the browser), but you should still take extra care to make sure you don't give someone the keys to your kingdom!
 
