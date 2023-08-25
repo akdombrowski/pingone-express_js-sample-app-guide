@@ -116,7 +116,7 @@ const responseType = "code";
  * Creates and serves the authorization request as a plain link for the user to
  * click and start authentication.
  *
- * No longer will respond with "Hello World!" 
+ * No longer will respond with "Hello World!"
  *
  * When someone navigates their browser, or user agent, to the root path, "/", a
  * basic link with the text "Login" is rendered. Clicking the link will redirect
@@ -141,7 +141,7 @@ app.get("/", (req, res) => {
   // When the link is clicked the user is redirected to the authorization
   // server, PingOne, at the authorize endpoint. The query parameters are read
   // by PingOne and combine to make the authorization request.
-  res.status(200).send("<a href=" + authzReq.toString() + ">Login</a>");
+  res.status(200).send("<a href=" + authzReq.toString() + ">Login - Step 3</a>");
 });
 
 /**
@@ -237,6 +237,6 @@ app.get(callbackPath, async (req, res) => {
  */
 app.listen(port, () => {
   console.log(
-    `Step 4 - The PingOne sample Express app has started listening on ${appBaseURL}:${port}`
+    `Step 3 - The PingOne sample Express app has started listening on ${appBaseURL}:${port}`
   );
 });

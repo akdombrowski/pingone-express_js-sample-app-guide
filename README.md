@@ -8,91 +8,127 @@
   <source media="(prefers-color-scheme: light)" type="image/svg" srcset="images/PingOne.svg">
 </picture>
 
-# PingOne Authentication
+# PingOne Quickstart Guide - Traditional Web App
 
-###### Express, NodeJS, OAuth 2.0, OIDC, Authz Code Grant Type, Auth, PingOne
+###### Express, Server, NodeJS, OAuth 2.0, OIDC, Authz Code Grant Type, Auth, PingOne
 
-This is an example of how to integrate [PingOne](https://apidocs.pingidentity.com/pingone/main/v1/api/) with a simple [Express](https://expressjs.com/) app using the [OIDC](https://openid.net/specs/openid-connect-core-1_0.html#CodeFlowAuth)[^1] / [OAuth 2.0](https://www.rfc-editor.org/rfc/rfc6749#section-4.1)[^2] Authorization Code Flow.
+This guide illustrates the steps to integrate\* a [PingOne authentication experience](https://apidocs.pingidentity.com/pingone/main/v1/api/#pingone-authentication-and-authorization) into a traditional web app. [Express](https://expressjs.com/) builds the server which will also serve up some basic HTML UI.
 
----
-
-## How to use this repo
-
-**A) Step by Step**
-
-Walking through step by step will guide you from a simple hello world example to a basic app with PingOne authentication using OAuth/OIDC.
-
-* Each step has its own folder with an `app.js` file:
-  * e.g., `step0/app.js`, `step1/app.js`, and so on...
-  * You can run each step with `npm run <step>` from same directory as `package.json`
-  * Where `<step> = step0 || step1 || step2 || step3 || step4`
-  
-**B) Use Snippets in Your App**
-
-Go through the README and/or source code and use what you need in your own app.
-
-**C) Start Experimenting Now**
-
-Jump to the last step and experiment with the complete example.
-
-* Run the app (after installing) from the same directory as `package.json` using the command: `npm run step4`
+<small>\*Using [OIDC Authentication using the Authorization Code Flow](https://openid.net/specs/openid-connect-core-1_0.html#CodeFlowAuth)[^1]</small>
 
 ---
 
-## How to Run the app
+---
 
-#### Prerequisites
+## Prerequisites
 
-* [PingOne account](https://www.pingidentity.com/en/try-ping.html)
-  * (Optional, but recommended) a test PingOne Identity and Environment
-* [NodeJS](https://nodejs.org/en) (v2.0+)
-* [An IDE](https://code.visualstudio.com/download) or a Text Editor & Terminal
-* [A modern browser](https://www.google.com/chrome/)
+<!-- Table seems cleaner? -->
 
-<small>
-<strong>*Tips:</strong>
+|                    |                                                                                                           |
+| ------------------ | --------------------------------------------------------------------------------------------------------- |
+| **NodeJS**         | min. [v2.0](https://nodejs.org/en "Download NodeJS")                                                      |
+| **Modern Browser** | e.g., [Chrome](https://www.google.com/chrome/ "Download Chrome")                                          |
+| **PingOne**        | [Environment, Identity, and App Connection\*](https://www.pingidentity.com/en/try-ping.html "Free Trial") |
 
-* Use an incognito or private browser, so your session from the admin console isn't used
-* Open your browser's network tab in the developer tools, and enable recording, preserving logs, and continued logging upon navigation (or the equivalent settings in your browser)
-</small>
+<!-- Tried including the below in the table but it didn't look right -->
 
-### How to Install Dependencies and Start
+> [!IMPORTANT]
+>
+> **PingOne App Connection**
+>
+> - created using the `OIDC Web App` template
+> - add the Redirect URI: `http://localhost:3000/callback`
+> - don't forget to toggle it on!
 
-<sup>*Each step includes its own independent version of the app</sup>
+<!-- -->
 
-1. `npm install` [^3] to install packages needed for the app (only need to run once)
-2. Then, you can run each stage of the app corresponding to a particular step:
-  
-        npm run <step>
-  
-  Where \<step\> is "step" + #
+<!-- Than bulleted list? -->
 
-* `npm run step0`
-* `npm run step1`
-* `npm run step2`
-* `npm run step3`
-* `npm run step4`
+<!--
+[NodeJS](https://nodejs.org/en) (v2.0+)
+- [A Modern Browser](https://www.google.com/chrome/)
+- [A PingOne Account](https://www.pingidentity.com/en/try-ping.html) with
+  - a test **PingOne Environment** with an **Identity/User** created there
+  - a **PingOne Application Connection**
+    - created using the `OIDC Web App` template
+    - add the Redirect URI: `http://localhost:3000/callback`
+    - don't forget to toggle it on!
+-->
 
-### What to Expect in the Final Step
+<img src="images/p1-app-conn-configuration-redirectURI.svg" width="75%"/>
 
-###### *Make sure you've entered the correct values from a PingOne Application Connection into an `.env` file before running. There's a template `.env.EXAMPLE` file you can duplicate, rename, and fill in your values
+## Create `.env` from `.env.Example` Template
 
-1. Navigate to `http://localhost:3000` in a browser.
-2. Click `Login` to initiate authentication.
-3. Browser displays **tokens** inside a JSON response
+> [!NOTE]
+> 
+> The values for the environment file can be found on the Overview or the Configuration tab of your PingOne Application Connection
+
+1. Duplicate the `.env.EXAMPLE` template file and rename the copy `.env`
+2. Fill in the configuration values from the PingOne App Connection
+
+```shell
+# Auth base url is dependent upon region
+# e.g.,
+# NA - https://auth.pingone.com
+# CA - https:/auth.pingone.ca
+# EU - https:/auth.pingone.eu
+# APAC - https:/auth.pingone.asia
+PINGONE_AUTH_BASE_URL=https://auth.pingone.com
+
+# PingOne Environment ID
+#z2345678-0000-456c-a657-3a21fc9ece7e
+PINGONE_ENVIRONMENT_ID=
+
+# PingOne App Connection Configuration Info
+#x7654321-0000-4fc4-b8ed-1441b767e78f
+PINGONE_CLIENT_ID=
+#########-####-####-####-############
+PINGONE_CLIENT_SECRET=
+
+# The base path where this app is running
+# Express defaults to localhost, update here otherwise
+# The Hello world example uses port 3000 (it's configured in app.js)
+APP_BASE_URL=http://localhost
+```
+
+---
+
+## Install Dependencies
+
+Run `npm install` from the top level directory of the repo:
+
+---
+
+> #### Tips
+>
+> - Open an incognito or private window so that no existing sessions are used
+> - Open your browser's network tab in the developer tools
+>   - enable recording
+>   - preserve logs
+>   - continue logging upon navigation
+>     <small>\*(how and where to configure these settings will depend on your browser)</small>
 
 ---
 
 # Walkthrough Guide
 
-## Step 0 - A functioning Express server
+###### Try running the app at each step to check if the behavior matches your expectations
 
-`./step0/app.js`
+<small>* First run `npm install`</small>
+<small>* Run the command from the top level directory.</small>
+
+## Step 0 - Express Server
+
+`npm run step0`
 
 We'll start with a simple working example with [Express's Hello World example](https://expressjs.com/en/starter/hello-world.html)!
-This step serves as a test to check whether your environment is properly set up, and it gives us something functional to start with and integrate PingOne into.
+Make sure this is working to rule out any environment issues as all you need is:
 
-*Some comments have been added for extra clarity
+1. `NodeJS`
+2. `npm install`
+3. `npm run step0`
+
+<small>\*Some comments have been added for extra clarity</small>
 
 ```javascript
 /**
@@ -112,7 +148,7 @@ app.get("/", (req, res) => {
 });
 
 /**
- * This outputs a message to your terminal (wherever you ran the command to 
+ * This outputs a message to your terminal (wherever you ran the command to
  * start the app) when the Express server starts up.
  */
 app.listen(port, () => {
@@ -122,57 +158,11 @@ app.listen(port, () => {
 
 ---
 
-## Step 1 - Register your app with PingOne
+## Step 1 - Preparing Needed Values
 
-`./step1/app.js`
+`npm run step1`
 
-1. In the [PingOne console](https://pingidentity.com/signon), navigate to `Connections > Applications` and create a new **PingOne App Connection** using the *OIDC Web App* template. This template is useful when your app has a backend/server.
-2. On the ***Configuration*** tab, add the **Redirect URI**:
-   `http://localhost:3000/callback` .
-
-   We'll see this come up in a later step, but here we tell PingOne that this is a valid url to redirect the user back to.
-
----
-
-> [!NOTE]
-> Keep this Configuration tab open! The values that are required for the .env file in the next step can be found here
-
-![New PingOne Application Connection - Edit Configuration View](images/p1-app-conn-configuration-redirectURI.svg)
-
----
-
-3. Duplicate or copy the `.env.EXAMPLE` file and rename it `.env`.
-4. Fill in the corresponding values from the PingOne App Connection you just created (the values can be found on the configuration tab).
-
-\***Protect your Client Secret** - *In a traditional Web App, where we have a backend/server to work with, we just need to make sure the secret doesn't get exposed through the frontend. This example makes use of a `.env` file that is accessed only on the server-side and only when needed. This helps keep the secret a secret without hardcoding the secret in the source code.*
-
-```shell
-# These values can be found on your 
-# Application Connection's Configuration tab 
-# in the PingOne admin console
-
-# Auth base url is dependent upon region
-# e.g.,
-# NA - https://auth.pingone.com
-# CA - https:/auth.pingone.ca
-# EU - https:/auth.pingone.eu
-# APAC - https:/auth.pingone.asia
-PINGONE_AUTH_BASE_URL=https://auth.pingone.com
-
-# PingOne Environment ID
-PINGONE_ENVIRONMENT_ID=#z2345678-0000-456c-a657-3a21fc9ece7e
-
-# PingOne App Connection Configuration Info
-PINGONE_CLIENT_ID=#x7654321-0000-4fc4-b8ed-1441b767e78f
-PINGONE_CLIENT_SECRET=########-####-####-####-############
-
-# The base path where this app is running
-# Express defaults to localhost, update here otherwise
-# The Hello world example uses port 3000 (it's configured in app.js)
-APP_BASE_URL=http://localhost
-```
-
-In the source code, we'll pull these values into variables using the dotenv package with the `process.env.<variable_name>` syntax:
+Here, we use your PingOne App Connection config values stored in the `.env` file:
 
 ```javascript
 // PingOne Auth (authentication/authorization) base url
@@ -188,13 +178,9 @@ const clientSecret = process.env.PINGONE_CLIENT_SECRET;
 const appBaseURL = process.env.APP_BASE_URL;
 ```
 
----
+<br />
 
-## Step 2 - Add Required Constants
-
-`./step2/app.js`
-
-1. This step adds some constants that'll be needed for our particular configuration and type of authentication/authorization being performed, i.e., PingOne as the authorization server and using the Authorization Code flow.
+This section defines values needed for integrating PingOne authentication (using OIDC):
 
 ```javascript
 // This app's base origin (e.g., http://localhost:3000)
@@ -231,17 +217,16 @@ const responseType = "code";
 
 ---
 
-## Step 3 - Modifying the Root Path Logic
+## Step 2 - Modifying the Root Path Logic
 
-`./step3/app.js`
+`npm run step2`
 
-1. Instead of returning "Hello World" from the root path, we'll modify it to construct our authorization request as a URL and send it as the href of an HTML `a` tag (aka a link).
-2. Once a user navigates their browser to the root path and clicks the login link, they'll be redirected to PingOne to authenticated and authorize any access she wishes to give the client.
-4. If you try it out, after completing authentication,
+> [!IMPORTANT]
+> 
+> You *will* see an error if you run this and authenticate (or a live session is found). **This error is expected!** We'll fix that in the next step when we set up the path for the redirect uri on our app.
 
-   **you'll see an error about a missing `callback` page. That's expected!**
-
-   We've yet to set up that path on our server! We'll do that in step 4.
+1. Instead of returning "Hello World" from the root path, we'll modify it to construct our authorization request as a URL and send it as a clickable "Login" link.
+2. Once a user navigates their browser to the root path and clicks the login link, they'll be redirected to PingOne to authenticate and authorize any access she wishes to give the client.
 
 ```javascript
 /**
@@ -251,7 +236,7 @@ const responseType = "code";
  * Creates and serves the authorization request as a plain link for the user to
  * click and start authentication.
  *
- * No longer will respond with "Hello World!" 
+ * No longer will respond with "Hello World!"
  *
  * When someone navigates their browser, or user agent, to the root path, "/", a
  * basic link with the text "Login" is rendered. Clicking the link will redirect
@@ -282,28 +267,24 @@ app.get("/", (req, res) => {
 
 ---
 
-## Step 4 - Setting up the Redirect Path
+## Step 3 - Setting up the Redirect Path
 
-`./step4/app.js`
+`npm run step3`
 
-Once the user has finished authentication with PingOne, you'll want them to return to your app, right?
-Yes! Of, course! Well, that's exactly what the `redirect_uri` is for! It's sent as a parameter in the authorization request and then in the token request.
-
-1. The `redirect_uri` is how PingOne knows where to send the user after authentication is completed.
-   * *For security, the `redirect_uri` must be registered with the authorization server, PingOne, first. This is what you did when you modified the App Connection's config and entered a value for the `redirect_uri`. Nice job, you.
-2. In our app, we'll set up a listener for this path.
-3. In the Authorization Code flow, we expect PingOne to send an authorization code (now, you see why they call it the "Authorization Code flow'? ;)) along with the user to our redirect path.
-4. The Authorization Code will be in the query parameters of the request from PingOne.
+1. The `redirect_uri` is where PingOne sends the user after authentication is completed.
+    - *For security*, the `redirect_uri` must be registered with the authorization server, PingOne, first. This is what you did when you modified the App Connection's config and entered a value for the `redirect_uri`. Nice job, you.
+2. We'll add the `redirect_uri` as a new path on our app/server.
+   * In the *Authorization Code flow*, PingOne redirects the user to the `redirect_uri` *with* an **authorization code** (now, you see why they call it the "Authorization Code flow'? ;))
+3. We can extract the Authorization Code from the query parameters of the url.[^2]
 
     It should look something like this:
 
         http://localhost:3000/callback?code=1200111a-e3f5-0000-0000-1116a5443e33
 
-5. We'll extract this code because we'll need it for the Token Request!
-6. Constructing the token request is a little more involved than the authorization request, but, fear not, we've explained everything right there in the source code!
-7. We send the Token Request, and we expect to get in return... tokens! Both an access token and id token in this case representing the user's authorization and identity information, respectively.
+4. We use the code to exchange for tokens with a Token Request at the `/token` endpoint and expect, in return, . . . tokens! 
+   * Both an *access token* and *id token* in this case representing the user's authorization and identity information, respectively.
 
-*If this time you didn't have to login, that's because PingOne found a live session and saved you from having to authenticate again. This can be changed, though.
+<small>\*If this time you didn't have to login, PingOne found a live session! However, you can modify this behavior.</small>
 
 ```javascript
 /**
@@ -394,26 +375,45 @@ app.get(callbackPath, async (req, res) => {
 });
 ```
 
-<h4 align="center">Congrats! You did it!</h4>
+###### Congrats! You did it!
 
-You've successfully authenticated a user with PingOne! The returned tokens serve as your proof.
+You've just walked through the steps to trigger authenticated a user with PingOne! The returned tokens serve as your proof.
 
 ---
 
 ## Common Errors and Potential Solutions
 
-* If PingOne sends a redirect_uri mismatch error, check the PingOne app connection and that you've entered the redirect uri correctly.
-* If PingOne sends a resource could not be found error, check the auth base url and that the App Connection has been turned on (flip the toggle on the app conenction)
-* If you have problems just running `npm start`, delete `node_modules` and `package-lock.json` and run the `npm install` again. Then try starting the app again.
+- If PingOne sends a redirect_uri mismatch error, check the PingOne app connection and that you've entered the redirect uri correctly.
+- If PingOne sends a resource could not be found error, check the auth base url and that the App Connection has been turned on (flip the toggle on the app conenction)
+- If you're having trouble authenticating with a user, make sure that user's identity exists in the same environment as the App Connection.s
+- If you have problems just running `npm run <step + #>`, delete `node_modules` and `package-lock.json` and run the `npm install` again. Then try starting the app again.
+
+---
 
 ## What's next?
 
 There are several different next steps you might take depending on your use case. Verifying the token(s), sending it in a request to PingOne, using token introspection, submitting a request to the resource server, and more.
 
-But, first you don't want to leave the authorization code in the url. This is done in this app so you can see how it all works and what to expect when you integrate into your own app. You'll want to extract the code and remove it from the url because it can be used to get an access token without other protections if someone happens to get a look at that url or it can block you from getting an access token if someone else attempts to use it and the authorization server invalidates it as a precautionary measure before you get a chance to use it.
+<br />
 
-During testing, you can [decode the token(s) with this tool here](https://developer.pingidentity.com/en/tools/jwt-decoder.html), verify the signature, check if it's expired, and examine the claims contained within each token. However, remember that these are `Bearer` tokens! That means that these tokens are furry and like honey... I mean, whoever "bears" (aka holds) the tokens holds the power that they grant. This particular decoder runs client-side (a.k.a. exclusively in the browser), but you should still take extra care to make sure you don't give someone the keys to your kingdom!
+But, first, you don't want to leave the authorization code in the url. It's done here so you can see how the flow works and what to expect when you integrate into your own app.
 
-[^1]: For authentication.
-[^2]: For authorization.
-[^3]: Run the command from the same directory containing the `package.json` file is located.
+You'll want to either:
+
+- remove it from the query parameters in the url before loading the UI
+- use the `response_mode=form_post` in the authorization request so the code is sent in the body of a `POST` request[^3]
+
+The authorization code *can* be used to get an access token in (additional protections exist like PKCE[^4]) if someone happens to get a look at that url or it can block you from getting an access token if someone else attempts to use it and the authorization server invalidates it as a precautionary measure before you get a chance to use it.
+
+<br />
+
+During testing, you can decode the token(s) with a [free Ping Identity tool](https://developer.pingidentity.com/en/tools/jwt-decoder.html), verify the signature, check if it's expired, and examine the claims contained within each token. 
+
+###### However, remember that these are `Bearer` tokens!** 
+
+That means that these tokens are furry and like honey... I mean, whoever "bears" (aka holds) the tokens holds the power that they grant. This particular decoder runs client-side (a.k.a. exclusively in the browser), but you should still take extra care to make sure you don't give someone the keys to your kingdom!
+
+[^1]: [Authentication using the Authorization Code Flow](https://openid.net/specs/openid-connect-core-1_0.html#CodeFlowAuth)
+[^2]: [The `response_type` parameter](https://openid.net/specs/openid-connect-core-1_0.html#Authentication) can be used to return tokens in the authorization request without the code exchange
+[^3]: [OpenID Connect - Form Post Response Mode](https://openid.net/specs/oauth-v2-form-post-response-mode-1_0.html#FormPostResponseMode)
+[^4]: [RFC 7636]((https://datatracker.ietf.org/doc/html/rfc7636))
