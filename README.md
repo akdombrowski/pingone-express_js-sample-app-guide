@@ -12,7 +12,7 @@
 
 ###### Express, Server, NodeJS, OAuth 2.0, OIDC, Authz Code Grant Type, Auth, PingOne
 
-This guide illustrates the steps to integrate\* a [PingOne authentication experience](https://apidocs.pingidentity.com/pingone/main/v1/api/#pingone-authentication-and-authorization) into a traditional web app. We'll start with a basic [Express](https://expressjs.com/) server which will serve some basic HTML for a simplified UI.
+This guide illustrates the steps to integrate\* a [PingOne authentication experience](https://apidocs.pingidentity.com/pingone/main/v1/api/#pingone-authentication-and-authorization) into a traditional web app. We'll start with a basic [Express](https://expressjs.com/) server which will serve a simplified UI.
 
 <small>\*Using [OIDC Authentication using the Authorization Code Flow](https://openid.net/specs/openid-connect-core-1_0.html#CodeFlowAuth)[^1]</small>
 
