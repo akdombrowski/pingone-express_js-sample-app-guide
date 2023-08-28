@@ -32,17 +32,18 @@ This guide illustrates the steps to integrate\* a [PingOne authentication experi
 >
 > **PingOne App Connection**
 >
-> - created using the `OIDC Web App` template
-> - add the Redirect URI: `http://localhost:3000/callback`
-> - don't forget to enable it!
+> - Create a test environment and user.
+> - Create an `OIDC Web App` App Connection
+> - In the OIDC Web App configuration, add the Redirect URI: `http://localhost:3000/callback`
+> - Ensure you enable the OIDC Web App connection using the toggle button!
+See [Quick Start](https://apidocs.pingidentity.com/early-access/mainPOC/v1/api/#quick-start) in *PingOne for Developers* for more information.
+<img src="images/p1-app-conn-configuration-redirectURI.svg" width="67%"/>
 
-<img src="images/p1-app-conn-configuration-redirectURI.svg" width="75%"/>
-
-## Create `.env` from `.env.Example` Template
+## Creating the Environment File
 
 > [!NOTE]
 >
-> The values for the environment file can be found on the Overview or the Configuration tab of your PingOne Application Connection
+> The values needed can be found on the Overview or the Configuration tab of your PingOne Application Connection
 
 1. Duplicate the `.env.EXAMPLE` template file and rename the copy `.env`
 2. Fill in the configuration values from the PingOne App Connection
@@ -57,18 +58,13 @@ This guide illustrates the steps to integrate\* a [PingOne authentication experi
 PINGONE_AUTH_BASE_URL=https://auth.pingone.com
 
 # PingOne Environment ID
-#z2345678-0000-456c-a657-3a21fc9ece7e
 PINGONE_ENVIRONMENT_ID=
 
-# PingOne App Connection Configuration Info
-#x7654321-0000-4fc4-b8ed-1441b767e78f
+# PingOne App Connection Client ID and Secret
 PINGONE_CLIENT_ID=
-#########-####-####-####-############
 PINGONE_CLIENT_SECRET=
 
 # The base path where this app is running
-# Express defaults to localhost, update here otherwise
-# The Hello world example uses port 3000 (it's configured in app.js)
 APP_BASE_URL=http://localhost
 ```
 
@@ -112,24 +108,23 @@ Make sure this is working to rule out any environment issues. all you need is:
 
 ```javascript
 /**
- * Express Server Config and Initialization
+ * Express Server Config and Init
  */
 const express = require("express");
 const app = express();
 const port = 3000;
 
 /**
- * Root path - "http://localhost:3000/" (or without the explicit "/" => "http://localhost:3000")
- *
- * Navigating to the root path should render "Hello World!" in your browser.
+ * Root path - (default is "http://localhost:3000")
+ * 
+ * Displays "Hello World!"
  */
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
 /**
- * This outputs a message to your terminal (wherever you ran the command to
- * start the app) when the Express server starts up.
+ * Terminal output message when the app starts.
  */
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
@@ -145,16 +140,17 @@ app.listen(port, () => {
 Here, we use your PingOne App Connection config values stored in the `.env` file:
 
 ```javascript
-// PingOne Auth (authentication/authorization) base url
+// PingOne specific
+// Auth base url
 const authBaseURL = process.env.PINGONE_AUTH_BASE_URL;
-// PingOne Environment ID (the ID of environment where the App Connection is
-// located)
+// Environment ID (where the app and user are located)
 const envID = process.env.PINGONE_ENVIRONMENT_ID;
-// PingOne Client ID of the App Connection
+// Client ID 
 const clientID = process.env.PINGONE_CLIENT_ID;
-// PingOne Client Secret of the App Connection
+// Client Secret
 const clientSecret = process.env.PINGONE_CLIENT_SECRET;
-// Express app (this app) base url (e.g., http://localhost)
+
+// Base url of this app
 const appBaseURL = process.env.APP_BASE_URL;
 ```
 
@@ -163,33 +159,20 @@ const appBaseURL = process.env.APP_BASE_URL;
 This section defines values needed for integrating PingOne authentication (using OIDC):
 
 ```javascript
-// This app's base origin (e.g., http://localhost:3000)
+// App's base origin (default is http://localhost:3000)
 const appBaseOrigin = appBaseURL + ":" + port;
-// PingOne authorize endpoint
+// Authorization endpoint
 const authorizeEndpoint = "/as/authorize";
-// PingOne token endpoint
+// Token endpoint
 const tokenEndpoint = "/as/token";
-// The url path made available for when the user is redirected back from the
-// authorization server, PingOne
+// redirect_uri (e.g., http://localhost:3000/callback)
 const callbackPath = "/callback";
-// The full url where the user is redirected after authenticating/authorizing
-// with PingOne (e.g., http://localhost:3000/callback)
 const redirectURI = appBaseOrigin + callbackPath;
 // Scopes specify what kind of access the client is requesting from the user.
-// These are some standard OIDC scopes.
-//   openid - signals an OIDC request; default resource on oauth/oidc app
-// connection
-// These need to be added as resources to the app connection or it will be
-// ignored by the authorization server. Once that's done, you can then append
-// it to your scopes variable using a whitespace to separate it from any other
-// scopes.
-//   profile - access to basic user info;
-//   p1:read:user - access to read the user's PingOne identity's attributes (a
-// PingOne - specific scope)
+//   openid - signals an OIDC request and is available by default
 const scopes = "openid";
-// The OAuth 2.0 grant type and associated type of response expected from the
-// /authorize endpoint. The Authorization Code flow is recommended as the best
-// practice in most cases
+
+// The Authorization Code flow is a generally a good place to start
 // https://datatracker.ietf.org/doc/html/draft-ietf-oauth-security-topics-23
 const grantType = "authorization_code";
 const responseType = "code";
