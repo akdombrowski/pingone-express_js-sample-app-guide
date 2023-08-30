@@ -45,8 +45,8 @@ See [Quick Start](https://apidocs.pingidentity.com/early-access/mainPOC/v1/api/#
 >
 > The values needed can be found on the Overview or the Configuration tab of your PingOne Application Connection
 
-1. Duplicate the `.env.EXAMPLE` template file and rename the copy `.env`
-2. Fill in the configuration values from the PingOne App Connection
+1. Duplicate the `.env.EXAMPLE` template file and rename the copy `.env` at the top level directory of the repo.
+2. Fill in the configuration values from the PingOne App Connection.
 
 ```shell
 # Auth base url is dependent upon region
@@ -87,22 +87,29 @@ Run `npm install` from the top level directory of the repo:
 
 ---
 
-# Walkthrough Guide
+# Walk-through
 
-###### Try running the app at each step to check if the behavior matches your expectations
+*You can skip to Step 4 if you just want to run the full example.
 
-* <small>Before anything, run `npm install`. You only need to do this once.</small>
-* <small>Run the command from the root of the repo.</small>
+##### Try running the app at each step to check if the behavior matches your expectations
 
-## Step 0 - Express Server
+* Before anything, run `npm install`. You only need to do this once.
+* Run the command from the root of the repo.
+* Stop the server (ctrl+c) in between runs. You will see an error similar to the following when trying to run the app: 
+`Error: listen EADDRINUSE: address already in use :::3000`  
 
-`npm run step0`
+## Step 0 - Express server
 
-We'll start with a simple working web app with [Express's Hello World example](https://expressjs.com/en/starter/hello-world.html)!
+Code here can be found in [`step0/index.js`](step0/index.js "step0/index.js")
+
+##### We'll start with a simple working web app with [Express's Hello World example](https://expressjs.com/en/starter/hello-world.html)!
 Make sure this is working to rule out any environment issues. all you need is:
 
-1. `npm run step0`
-2. Then, open an incognito/private browser window and navigate to [`http://localhost:3000`](http://localhost:3000 "http://localhost:3000"). You should see "Hello World".
+1. `npm run step0` from the root of the repo.
+2. Open an incognito/private browser window
+3. Navigate to [`http://localhost:3000`](http://localhost:3000 "http://localhost:3000"). You should see "Hello World".
+
+<br />
 
 <small>\*Some comments have been added for extra clarity</small>
 
@@ -133,9 +140,22 @@ app.listen(port, () => {
 
 ---
 
-## Step 1 - Preparing Needed Values
+## Step 1 - Preparing needed values
 
-`npm run step1`
+Code here can be found in [`step1/index.js`](step1/index.js "step1/index.js")
+
+<br />
+
+*Stop any other running versions of this app (ctrl+C) from the terminal where you started the previous app
+1. `npm run step1` from the root of the repo.
+2. Refresh your browser or navigate to [`http://localhost:3000`](http://localhost:3000 "http://localhost:3000").
+3. You should see 
+  
+        Hello Step1! Environment ID: <env-id> Client ID: <client-id>. If you're seeing "undefined", check that you've correctly created the .env file.
+
+    If you're seeing `undefined` in place of ID values, re-check that you've run through [Creating the Environment File](#creating-the-environment-file "Creating the Environment File").
+
+<br />
 
 Here, we use your PingOne App Connection config values stored in the `.env` file:
 
@@ -182,15 +202,24 @@ const responseType = "code";
 
 ## Step 2 - Modifying the Root Path Logic
 
-`npm run step2`
-
 > [!IMPORTANT]
 >
-> You *will* see an error if you run this and authenticate (or a live session is found). **This error is expected!** We'll fix that in the next step when we set up the path for the redirect uri on our app.
+> You *will* see a `Cannot get /callback` **error** if you run this and authenticate (or authentication might be skipped if a live session is found). **This error is expected!** We'll fix that in the next step when we set up the path for the redirect uri on our app.
 
-1. Instead of returning "Hello World" from the root path, we'll modify it to construct our authorization request as a URL and send it as a clickable "Login" link.
+<br />
+
+##### Redirect User to PingOne to Authenticate
+
+1. Instead of only displaying text from the root path, we'll modify it to construct our authorization request as a URL and send it as a clickable "Login" link.
 2. Once a user navigates their browser to the root path and clicks the login link, they'll be redirected to PingOne to authenticate and authorize any access she wishes to give the client.
 
+<br />
+
+*Stop any other running versions of this app (ctrl+C) from the terminal where you started the previous app
+1. `npm run step2` from the root of the repo.
+2. Refresh your browser or navigate to [`http://localhost:3000`](http://localhost:3000 "http://localhost:3000").
+
+The following code can also be found in [`step2/index.js`](step2/index.js "step2/index.js")
 ```javascript
 /**
  * Root url - "http://localhost:3000/" (or without the explicit "/" =>
@@ -340,7 +369,7 @@ app.get(callbackPath, async (req, res) => {
 
 ###### Congrats! You did it
 
-You've just walked through the steps to trigger authenticated a user with PingOne! The returned tokens serve as your proof.
+You've just walked through the steps to trigger authentication of a user with PingOne! The returned tokens serve as your proof.
 
 ---
 
