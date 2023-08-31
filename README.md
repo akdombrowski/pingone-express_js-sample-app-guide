@@ -261,20 +261,23 @@ app.get("/", (req, res) => {
 
 ## Step 3 - Setting up the Redirect Path
 
-`npm run step3`
+* This step adds in a new path for the `redirect_uri` named `/callback`.
+* After the user authenticates, PingOne uses the `redirect_uri` to send the user to, along with the **authorization code**.
+    - *For security*, the `redirect_uri` must be configured on the Application Connection before performing authentication. PingOne will return an error if the `redirect_uri` provided in the authorization request is not configured on the Connection.
 
-1. The `redirect_uri` is where PingOne sends the user after authentication is completed.
-    - *For security*, the `redirect_uri` must be registered with the authorization server, PingOne, first. This is what you did when you modified the App Connection's config and entered a value for the `redirect_uri`. Nice job, you.
-2. We'll add the `redirect_uri` as a new path on our app/server.
-   - In the *Authorization Code flow*, PingOne redirects the user to the `redirect_uri` *with* an **authorization code** (now, you see why they call it the "Authorization Code flow'? ;))
-3. We can extract the Authorization Code from the query parameters of the url.[^2]
+* The code extracts the **Authorization Code** from the query parameters of the url.[^2]
 
-    It should look something like this:
+    The url after logging in should look something like this:
 
-        http://localhost:3000/callback?code=1200111a-e3f5-0000-0000-1116a5443e33
+```js
+// An example url after logging in and being redirected to /callback
+http://localhost:3000/callback?code=1200111a-e3f5-0000-0000-1116a5443e33
+```
 
-4. We use the code to exchange for tokens with a Token Request at the `/token` endpoint and expect, in return, . . . tokens!
+1. We use the code to exchange for tokens with a Token Request at the `/token` endpoint and expect, in return, . . . tokens!
    - Both an *access token* and *id token* in this case representing the user's authorization and identity information, respectively.
+
+`npm run step3`
 
 <small>\*If this time you didn't have to login, PingOne found a live session! However, you can modify this behavior.</small>
 
@@ -377,7 +380,7 @@ You've just walked through the steps to trigger authentication of a user with Pi
 
 - If PingOne sends a redirect_uri mismatch error, check the PingOne app connection and that you've entered the redirect uri correctly.
 - If PingOne sends a resource could not be found error, check the auth base url and that the App Connection has been turned on (flip the toggle on the app conenction)
-- If you're having trouble authenticating with a user, make sure that user's identity exists in the same environment as the App Connection.s
+- If you're having trouble authenticating with a user, make sure that user's identity exists in the same environment as the App Connection.
 - If you have problems just running `npm run <step + #>`, delete `node_modules` and `package-lock.json` and run the `npm install` again. Then try starting the app again.
 
 ---
