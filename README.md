@@ -8,11 +8,11 @@
   <source media="(prefers-color-scheme: light)" type="image/svg" srcset="images/PingOne.svg">
 </picture>
 
-# PingOne Quickstart Guide - Traditional Web App
+# Integrating PingOne with a Web App
 
 ###### Express, Server, NodeJS, OAuth 2.0, OIDC, Authz Code Grant Type, Auth, PingOne
 
-This guide illustrates the steps to integrate\* a [PingOne authentication experience](https://apidocs.pingidentity.com/pingone/main/v1/api/#pingone-authentication-and-authorization) into a traditional web app. We'll start with a basic [Express](https://expressjs.com/) server which will serve some basic HTML for a simplified UI.
+This guide shows you the steps needed to integrate\* a [PingOne authentication experience](https://apidocs.pingidentity.com/pingone/main/v1/api/#pingone-authentication-and-authorization) into a traditional web app (one with a server). We'll start with a basic [Express](https://expressjs.com/) server which will serve some a simplified UI.
 
 <small>\*Using [OIDC Authentication using the Authorization Code Flow](https://openid.net/specs/openid-connect-core-1_0.html#CodeFlowAuth)[^1]</small>
 
@@ -22,31 +22,34 @@ This guide illustrates the steps to integrate\* a [PingOne authentication experi
 
 ## Prerequisites
 
-|                    |                                                                                                           |
-| ------------------ | --------------------------------------------------------------------------------------------------------- |
-| **NodeJS**         | Minimum [v2.0](https://nodejs.org/en "Download NodeJS")                                                      |
-| **Modern Browser** | Such as [Chrome](https://www.google.com/chrome/ "Download Chrome")                                          |
-| **PingOne**        | [Environment, Identity, and App Connection](https://www.pingidentity.com/en/try-ping.html "Free Trial") |
+|                     |                                                                          |
+|---------------------|--------------------------------------------------------------------------|
+| **NodeJS**          | Minimum [v2.0](https://nodejs.org/en "Download NodeJS")                  |
+| **Modern Browser**  | Such as [Chrome](https://www.google.com/chrome/ "Download Chrome")       |
+| **PingOne Account** | [Free trial](https://www.pingidentity.com/en/try-ping.html "Free Trial") |
 
-> [!IMPORTANT]
->
-> **PingOne App Connection**
->
-> - Create a test environment and user.
-> - Create an `OIDC Web App` App Connection
-> - In the OIDC Web App configuration, add the Redirect URI: `http://localhost:3000/callback`
-> - Ensure you enable the OIDC Web App connection using the toggle button!
+---
+
+## **Setting up PingOne**
+
+ - Create a test **environment** and **user**.
+ - Create an **app connection** in the test environment using the `OIDC Web App` template
+ - On the configuration tab, add the **Redirect URI**: `http://localhost:3000/callback`
+ - Ensure you enable the OIDC Web App connection using the toggle button!
 See [Quick Start](https://apidocs.pingidentity.com/early-access/mainPOC/v1/api/#quick-start) in *PingOne for Developers* for more information.
+
+
 <img src="images/p1-app-conn-configuration-redirectURI.svg" width="67%"/>
+
+---
 
 ## Creating the Environment File
 
 > [!NOTE]
->
-> The values needed can be found on the Overview or the Configuration tab of your PingOne Application Connection
+> The configuration values can be found on the Overview or the Configuration tab of your PingOne Application Connection
 
-1. Duplicate the `.env.EXAMPLE` template file and rename the copy `.env` at the top level directory of the repo.
-2. Fill in the configuration values from the PingOne App Connection.
+1. Duplicate the `.env.EXAMPLE` template file and rename the copy `.env` at the top directory of the repo.
+2. Fill in the empty values with the corresponding ones from the PingOne App Connection.
 
 ```shell
 # Auth base url is dependent upon region
@@ -70,44 +73,46 @@ APP_BASE_URL=http://localhost
 
 ---
 
-## Install Dependencies
 
-Run `npm install` from the top level directory of the repo:
+## Install
+
+Run `npm install` or `yarn install` from the top directory of the repo.
 
 ---
 
-> #### Tips
->
-> - Open an incognito or private window so that no existing sessions are used
-> - Open your browser's network tab in the developer tools
->   - enable recording
+<br />
+
+*If you want to jump to the full integration, go straight to Step 3.
+
+# Walk-Through
+
+The following demonstrates how to integrate PingOne by breaking it up into a few steps. Each step adds some new code, and you can run what's been built up to that point to see what's been affected.
+
+##### 
+> [!Note]
+> - Open the network tab in the browser's developer tools beforehand if you want a little deeper insight into what's happening. If you do, make sure these options are enabled:
+>   - recording
 >   - preserve logs
 >   - continue logging upon navigation
 >     <small>\*(how and where to configure these settings will depend on your browser)</small>
 
----
 
-# Walk-through
-
-*You can skip to Step 4 if you just want to run the full example.
-
-##### Try running the app at each step to check if the behavior matches your expectations
-
-* Before anything, run `npm install`. You only need to do this once.
-* Run the command from the root of the repo.
-* Stop the server (ctrl+c) in between runs. You will see an error similar to the following when trying to run the app: 
+> [!IMPORTANT]
+> * You only need to run `npm install` once.
+> * Stop the server (ctrl+c) between runs. You will see an error similar to the following when trying to run multiple instances of the app: 
 `Error: listen EADDRINUSE: address already in use :::3000`  
 
 ## Step 0 - Express server
 
-Code here can be found in [`step0/index.js`](step0/index.js "step0/index.js")
+Code can be found in [`step0/index.js`](step0/index.js "step0/index.js")
 
-##### We'll start with a simple working web app with [Express's Hello World example](https://expressjs.com/en/starter/hello-world.html)!
-Make sure this is working to rule out any environment issues. all you need is:
+##### Running this step spins up a simple web app with [Express's Hello World example](https://expressjs.com/en/starter/hello-world.html)!
+Use this step working to rule out any environment issues.
 
 1. `npm run step0` from the root of the repo.
 2. Open an incognito/private browser window
-3. Navigate to [`http://localhost:3000`](http://localhost:3000 "http://localhost:3000"). You should see "Hello World".
+3. Navigate to [`http://localhost:3000`](http://localhost:3000 "http://localhost:3000"). 
+4. You should see "Hello World".
 
 <br />
 
