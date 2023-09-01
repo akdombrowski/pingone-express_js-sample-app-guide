@@ -93,6 +93,7 @@ The following demonstrates how to integrate PingOne by breaking it down and taki
 >   - recording
 >   - preserve logs
 >   - continue logging upon navigation
+> 
 >     <small>\*(how and where to configure these settings will depend on your browser)</small>
 
 > [!IMPORTANT]
