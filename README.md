@@ -106,7 +106,7 @@ The following demonstrates how to integrate PingOne by breaking it up into a few
 Code can be found in [`step0/index.js`](step0/index.js "step0/index.js")
 
 ##### Running this step spins up a simple web app with [Express's Hello World example](https://expressjs.com/en/starter/hello-world.html)!
-Use this step working to rule out any environment issues.
+Use this step to rule out any issues unrelated to integrating PingOne.
 
 1. `npm run step0` from the root of the repo.
 2. Open an incognito/private browser window
