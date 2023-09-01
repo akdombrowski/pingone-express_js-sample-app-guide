@@ -100,6 +100,7 @@ The following demonstrates how to integrate PingOne by breaking it down and taki
 >
 > - You only need to run `npm install` once.
 > - Stop the server (ctrl+c) between runs. You will see an error similar to the following when trying to run multiple instances of the app:
+> 
 > `Error: listen EADDRINUSE: address already in use :::3000`  
 
 ## Step 0 - Express server
