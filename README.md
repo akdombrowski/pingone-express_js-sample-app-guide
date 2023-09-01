@@ -111,7 +111,7 @@ Code can be found in [`step0/index.js`](step0/index.js "step0/index.js")
 
 ##### Running this step spins up a simple web app with [Express's Hello World example](https://expressjs.com/en/starter/hello-world.html)
 
-Use this step to rule out any issues unrelated to integrating PingOne.
+Also, use this step to rule out any issues in your environment.
 
 1. `npm run step0` from the root of the repo.
 2. Open an incognito/private browser window
