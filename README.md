@@ -88,7 +88,6 @@ Run `npm install` or `yarn install` from the top directory of the repo.
 
 The following demonstrates how to integrate PingOne by breaking it up into a few steps. Each step adds some new code, and you can run what's been built up to that point to see what's been affected.
 
-##### 
 > [!Note]
 > - Open the network tab in the browser's developer tools beforehand if you want a little deeper insight into what's happening. If you do, make sure these options are enabled:
 >   - recording
