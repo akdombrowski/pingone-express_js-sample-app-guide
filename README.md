@@ -281,7 +281,7 @@ Code here can be found in [`step3/index.js`](step3/index.js "step3/index.js")
 
 <br />
 
-##### This step adds in a new `/callback` path for the `redirect_uri` and extracts the **Authorization Code** from the query parameters of the url.[^2]
+##### This step adds in a new `/callback` path for the `redirect_uri` and extracts the **authorization code** from the query parameters of the url.[^2]
 
 After the user authenticates, PingOne uses the `redirect_uri` to send the user to, along with the **authorization code**.
 <small>*For security*, the `redirect_uri` must be configured on the Application Connection before performing authentication. PingOne will return an error if the `redirect_uri` provided in the authorization request is not configured on the Connection.</small>
