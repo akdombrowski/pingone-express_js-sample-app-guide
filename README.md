@@ -32,12 +32,11 @@ This guide shows you the steps needed to integrate\* a [PingOne authentication e
 
 ## **Setting up PingOne**
 
- - Create a test **environment** and **user**.
- - Create an **app connection** in the test environment using the `OIDC Web App` template
- - On the configuration tab, add the **Redirect URI**: `http://localhost:3000/callback`
- - Ensure you enable the OIDC Web App connection using the toggle button!
-See [Quick Start](https://apidocs.pingidentity.com/early-access/mainPOC/v1/api/#quick-start) in *PingOne for Developers* for more information.
-
+- Create a test **environment** and **user**.
+- Create an **app connection** in the test environment using the `OIDC Web App` template
+- On the configuration tab, add the **Redirect URI**: `http://localhost:3000/callback`
+- Ensure you enable the OIDC Web App connection using the toggle button!
+*See [Quick Start](https://apidocs.pingidentity.com/early-access/mainPOC/v1/api/#quick-start) in*PingOne for Developers* for more information.
 
 <img src="images/p1-app-conn-configuration-redirectURI.svg" width="67%"/>
 
@@ -73,7 +72,6 @@ APP_BASE_URL=http://localhost
 
 ---
 
-
 ## Install
 
 Run `npm install` or `yarn install` from the top directory of the repo.
@@ -86,31 +84,35 @@ Run `npm install` or `yarn install` from the top directory of the repo.
 
 # Walk-Through
 
-The following demonstrates how to integrate PingOne by breaking it up into a few steps. Each step adds some new code, and you can run what's been built up to that point to see what's been affected.
+The following demonstrates how to integrate PingOne by breaking it up into a few steps. Each step builds on the previous and allows you to run the app with what's been built up to that point to see what's been affected.
 
 > [!Note]
+>
 > - Open the network tab in the browser's developer tools beforehand if you want a little deeper insight into what's happening. If you do, make sure these options are enabled:
 >   - recording
 >   - preserve logs
 >   - continue logging upon navigation
 >     <small>\*(how and where to configure these settings will depend on your browser)</small>
 
-
 > [!IMPORTANT]
-> * You only need to run `npm install` once.
-> * Stop the server (ctrl+c) between runs. You will see an error similar to the following when trying to run multiple instances of the app: 
+>
+> - You only need to run `npm install` once.
+> - Stop the server (ctrl+c) between runs. You will see an error similar to the following when trying to run multiple instances of the app:
 `Error: listen EADDRINUSE: address already in use :::3000`  
 
 ## Step 0 - Express server
 
 Code can be found in [`step0/index.js`](step0/index.js "step0/index.js")
 
-##### Running this step spins up a simple web app with [Express's Hello World example](https://expressjs.com/en/starter/hello-world.html)!
+<br />
+
+##### Running this step spins up a simple web app with [Express's Hello World example](https://expressjs.com/en/starter/hello-world.html)
+
 Use this step to rule out any issues unrelated to integrating PingOne.
 
 1. `npm run step0` from the root of the repo.
 2. Open an incognito/private browser window
-3. Navigate to [`http://localhost:3000`](http://localhost:3000 "http://localhost:3000"). 
+3. Navigate to [`http://localhost:3000`](http://localhost:3000 "http://localhost:3000").
 4. You should see "Hello World".
 
 <br />
@@ -151,9 +153,10 @@ Code here can be found in [`step1/index.js`](step1/index.js "step1/index.js")
 <br />
 
 *Stop any other running versions of this app (ctrl+C) from the terminal where you started the previous app
+
 1. `npm run step1` from the root of the repo.
 2. Refresh your browser or navigate to [`http://localhost:3000`](http://localhost:3000 "http://localhost:3000").
-3. You should see 
+3. You should see
   
         Hello Step1! Environment ID: <env-id> Client ID: <client-id>. If you're seeing "undefined", check that you've correctly created the .env file.
 
@@ -206,24 +209,30 @@ const responseType = "code";
 
 ## Step 2 - Modifying the Root Path Logic
 
-> [!IMPORTANT]
->
-> You *will* see a `Cannot get /callback` **error** if you run this and authenticate (or authentication might be skipped if a live session is found). **This error is expected!** We'll fix that in the next step when we set up the path for the redirect uri on our app.
+Code here can be found in [`step2/index.js`](step2/index.js "step2/index.js")
 
 <br />
 
-##### Redirect User to PingOne to Authenticate
+> [!IMPORTANT]
+>
+> You *will* see a `Cannot get /callback` **error message** after clicking `Login` and authenticating (or authentication might be skipped if a live session is found).
+> **This error is expected!** We've not yet set up the redirect path, `/callback`. The next step will show you how to do that.
 
-1. Instead of only displaying text from the root path, we'll modify it to construct our authorization request as a URL and send it as a clickable "Login" link.
-2. Once a user navigates their browser to the root path and clicks the login link, they'll be redirected to PingOne to authenticate and authorize any access she wishes to give the client.
+##### Redirect the user to PingOne to authenticate
+
+- Instead of only displaying text from the root path, we'll modify it to construct our authorization request as a URL and send it as a clickable "Login" link.
+- Once a user navigates their browser to the root path and clicks the login link, they'll be redirected to PingOne to authenticate and authorize any access she wishes to give the client.
 
 <br />
 
 *Stop any other running versions of this app (ctrl+C) from the terminal where you started the previous app
+
 1. `npm run step2` from the root of the repo.
 2. Refresh your browser or navigate to [`http://localhost:3000`](http://localhost:3000 "http://localhost:3000").
+3. Click the `Login` link
+4. Login with your test user
+5. You should see the `Cannot get /callback` error message
 
-The following code can also be found in [`step2/index.js`](step2/index.js "step2/index.js")
 ```javascript
 /**
  * Root url - "http://localhost:3000/" (or without the explicit "/" =>
@@ -265,23 +274,32 @@ app.get("/", (req, res) => {
 
 ## Step 3 - Setting up the Redirect Path
 
-* This step adds in a new path for the `redirect_uri` named `/callback`.
-* After the user authenticates, PingOne uses the `redirect_uri` to send the user to, along with the **authorization code**.
-    - *For security*, the `redirect_uri` must be configured on the Application Connection before performing authentication. PingOne will return an error if the `redirect_uri` provided in the authorization request is not configured on the Connection.
+Code here can be found in [`step3/index.js`](step3/index.js "step3/index.js")
 
-* The code extracts the **Authorization Code** from the query parameters of the url.[^2]
+<br />
 
-    The url after logging in should look something like this:
+##### This step adds in a new `/callback` path for the `redirect_uri` and extracts the **Authorization Code** from the query parameters of the url.[^2]
 
-```js
+After the user authenticates, PingOne uses the `redirect_uri` to send the user to, along with the **authorization code**.
+<small>*For security*, the `redirect_uri` must be configured on the Application Connection before performing authentication. PingOne will return an error if the `redirect_uri` provided in the authorization request is not configured on the Connection.</small>
+
+```
 // An example url after logging in and being redirected to /callback
-http://localhost:3000/callback?code=1200111a-e3f5-0000-0000-1116a5443e33
+http://localhost:3000/callback?code=<uuid>
 ```
 
-1. We use the code to exchange for tokens with a Token Request at the `/token` endpoint and expect, in return, . . . tokens!
-   - Both an *access token* and *id token* in this case representing the user's authorization and identity information, respectively.
+The code is exchanged for tokens with a Token Request at the `/token` endpoint to get . . . tokens!
+<small>*Both an *access token* and *id token* are returned in this case which represent the authorization and authentication, respectively.</small>
 
-`npm run step3`
+<br />
+
+*Stop any other running versions of this app (ctrl+C) from the terminal where you started the previous app
+
+1. `npm run step3` from the root of the repo.
+2. Refresh your browser or navigate to [`http://localhost:3000`](http://localhost:3000 "http://localhost:3000").
+3. Click the `Login` link
+4. Login with your test user (skipped if a session is found; close and open a new incognito window to see the login page instead)
+5. You should expect to now see some JSON in your browser with an `access_token` key and value.
 
 <small>\*If this time you didn't have to login, PingOne found a live session! However, you can modify this behavior.</small>
 
@@ -292,14 +310,6 @@ http://localhost:3000/callback?code=1200111a-e3f5-0000-0000-1116a5443e33
  * The path for the redirect_uri. When the user is redirected from PingOne, the
  * authorization code is extracted from the query parameters, then the token
  * request is constructed and submitted for access and id tokens.
- *
- * This path isn't meant to be manually navigated to. It serves as the location
- * for the user to be redirected to after interacting with PingOne, the
- * authorization server. If the user successfully authenticated/authorized with
- * PingOne, they'll be sent to here with an authorization code in the query
- * parameters which looks like (?code=<random-chars>). In this sample, the code
- * is left in the URL, so you can see what it looks like and how it's sent here,
- * but, in practice, you'll want to limit exposure to this value.
  */
 app.get(callbackPath, async (req, res) => {
   // Try to parse the authorization code from the query parameters of the url.
@@ -330,14 +340,11 @@ app.get(callbackPath, async (req, res) => {
   // Use URLSearchParams because we're using
   // "application/x-www-form-urlencoded".
   const urlBodyParams = new URLSearchParams();
-  // The grant type is the OAuth 2.0/OIDC grant type that the PingOne app
-  // connection is configured to accept and was used for the authorization
-  // request. Remember, this example is set up for Authorization Code.
+  // The grant type used for the OAuth 2.0/OIDC Authorization Code flow.
   urlBodyParams.append("grant_type", grantType);
   // Include the authorization code that was extracted from the url.
   urlBodyParams.append("code", authzCode);
-  // The redirect_uri is the same as what was sent in the authorize request. It
-  // must be registered with PingOne by configuring the app connection.
+  // The redirect_uri is the same as what was sent in the authorize request.
   urlBodyParams.append("redirect_uri", redirectURI);
 
   // Options to supply the fetch function.
