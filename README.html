@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Integrating PingOne with a Web App</title>
+        <style>
+/* From extension vscode.github */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.vscode-dark img[src$=\#gh-light-mode-only],
+.vscode-light img[src$=\#gh-dark-mode-only] {
+	display: none;
+}
+
+</style>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css">
+<link href="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.css" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1;
+            }
+        </style>
+        <style>
+.task-list-item {
+    list-style-type: none;
+}
+
+.task-list-item-checkbox {
+    margin-left: -20px;
+    vertical-align: middle;
+    pointer-events: none;
+}
+</style>
+        
+    </head>
+    <body class="vscode-body vscode-dark">
+        <picture>
+  <source media="(prefers-color-scheme: dark)" type="image/svg" srcset="images/PingIdentity-dark.svg">
+  <source media="(prefers-color-scheme: light)" type="image/svg" srcset="images/PingIdentity.svg">
+  <img alt="PingOne Cloud Platform" src="images/PingIdentity.svg">
+</picture>
+<picture>
+  <source media="(prefers-color-scheme: light)" type="image/svg" srcset="images/PingOne.svg">
+</picture>
+<h1 id="integrating-pingone-with-a-web-app">Integrating PingOne with a Web App</h1>
+<h6 id="express-server-nodejs-oauth-20-oidc-authz-code-grant-type-auth-pingone">Express, Server, NodeJS, OAuth 2.0, OIDC, Authz Code Grant Type, Auth, PingOne</h6>
+<p>This guide shows you the steps needed to integrate* a <a href="https://apidocs.pingidentity.com/pingone/main/v1/api/#pingone-authentication-and-authorization">PingOne authentication experience</a> into a traditional web app (one with a server). We'll start with a basic <a href="https://expressjs.com/">Express</a> server which will serve some a simplified UI.</p>
+<p><small>*Using <a href="https://openid.net/specs/openid-connect-core-1_0.html#CodeFlowAuth">OIDC Authentication using the Authorization Code Flow</a>[^1]</small></p>
+<hr>
+<hr>
+<h2 id="prerequisites">Prerequisites</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>NodeJS</strong></td>
+<td>Minimum <a href="https://nodejs.org/en" title="Download NodeJS">v2.0</a></td>
+</tr>
+<tr>
+<td><strong>Modern Browser</strong></td>
+<td>Such as <a href="https://www.google.com/chrome/" title="Download Chrome">Chrome</a></td>
+</tr>
+<tr>
+<td><strong>PingOne Account</strong></td>
+<td><a href="https://www.pingidentity.com/en/try-ping.html" title="Free Trial">Free trial</a></td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="setting-up-pingone"><strong>Setting up PingOne</strong></h2>
+<ul>
+<li>Create a test <strong>environment</strong> and <strong>user</strong>.</li>
+<li>Create an <strong>app connection</strong> in the test environment using the <code>OIDC Web App</code> template</li>
+<li>On the configuration tab, add the <strong>Redirect URI</strong>: <code>http://localhost:3000/callback</code></li>
+<li>Ensure you enable the OIDC Web App connection using the toggle button!
+See <a href="https://apidocs.pingidentity.com/early-access/mainPOC/v1/api/#quick-start">Quick Start</a> in <em>PingOne for Developers</em> for more information.</li>
+</ul>
+<img src="images/p1-app-conn-configuration-redirectURI.svg" width="67%"/>
+<hr>
+<h2 id="creating-the-environment-file">Creating the Environment File</h2>
+<blockquote>
+<p>[!NOTE]
+The configuration values can be found on the Overview or the Configuration tab of your PingOne Application Connection</p>
+</blockquote>
+<ol>
+<li>Duplicate the <code>.env.EXAMPLE</code> template file and rename the copy <code>.env</code> at the top directory of the repo.</li>
+<li>Fill in the empty values with the corresponding ones from the PingOne App Connection.</li>
+</ol>
+<pre><code class="language-shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">Auth base url is dependent upon region</span>
+<span class="hljs-meta prompt_"># </span><span class="language-bash">e.g.,</span>
+<span class="hljs-meta prompt_"># </span><span class="language-bash">NA - https://auth.pingone.com</span>
+<span class="hljs-meta prompt_"># </span><span class="language-bash">CA - https:/auth.pingone.ca</span>
+<span class="hljs-meta prompt_"># </span><span class="language-bash">EU - https:/auth.pingone.eu</span>
+<span class="hljs-meta prompt_"># </span><span class="language-bash">APAC - https:/auth.pingone.asia</span>
+PINGONE_AUTH_BASE_URL=https://auth.pingone.com
+<span class="hljs-meta prompt_">
+# </span><span class="language-bash">PingOne Environment ID</span>
+PINGONE_ENVIRONMENT_ID=
+<span class="hljs-meta prompt_">
+# </span><span class="language-bash">PingOne App Connection Client ID and Secret</span>
+PINGONE_CLIENT_ID=
+PINGONE_CLIENT_SECRET=
+<span class="hljs-meta prompt_">
+# </span><span class="language-bash">The base path <span class="hljs-built_in">where</span> this app is running</span>
+APP_BASE_URL=http://localhost
+</code></pre>
+<hr>
+<h2 id="install">Install</h2>
+<p>Run <code>npm install</code> or <code>yarn install</code> from the top directory of the repo.</p>
+<hr>
+<br />
+<p>*If you want to jump to the full integration, go straight to Step 3.</p>
+<h1 id="walk-through">Walk-Through</h1>
+<p>The following demonstrates how to integrate PingOne by breaking it up into a few steps. Each step adds some new code, and you can run what's been built up to that point to see what's been affected.</p>
+<blockquote>
+<p>[!Note]</p>
+<ul>
+<li>Open the network tab in the browser's developer tools beforehand if you want a little deeper insight into what's happening. If you do, make sure these options are enabled:
+<ul>
+<li>recording</li>
+<li>preserve logs</li>
+<li>continue logging upon navigation
+<small>*(how and where to configure these settings will depend on your browser)</small></li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<p>[!IMPORTANT]</p>
+<ul>
+<li>You only need to run <code>npm install</code> once.</li>
+<li>Stop the server (ctrl+c) between runs. You will see an error similar to the following when trying to run multiple instances of the app:
+<code>Error: listen EADDRINUSE: address already in use :::3000</code></li>
+</ul>
+</blockquote>
+<h2 id="step-0---express-server">Step 0 - Express server</h2>
+<p>Code can be found in <a href="step0/index.js" title="step0/index.js"><code>step0/index.js</code></a></p>
+<h5 id="running-this-step-spins-up-a-simple-web-app-with-expresss-hello-world-example">Running this step spins up a simple web app with <a href="https://expressjs.com/en/starter/hello-world.html">Express's Hello World example</a>!</h5>
+<p>Use this step to rule out any issues unrelated to integrating PingOne.</p>
+<ol>
+<li><code>npm run step0</code> from the root of the repo.</li>
+<li>Open an incognito/private browser window</li>
+<li>Navigate to <a href="http://localhost:3000" title="http://localhost:3000"><code>http://localhost:3000</code></a>.</li>
+<li>You should see &quot;Hello World&quot;.</li>
+</ol>
+<br />
+<p><small>*Some comments have been added for extra clarity</small></p>
+<pre><code class="language-javascript"><span class="hljs-comment">/**
+ * Express Server Config and Init
+ */</span>
+<span class="hljs-keyword">const</span> express = <span class="hljs-built_in">require</span>(<span class="hljs-string">&quot;express&quot;</span>);
+<span class="hljs-keyword">const</span> app = <span class="hljs-title function_">express</span>();
+<span class="hljs-keyword">const</span> port = <span class="hljs-number">3000</span>;
+
+<span class="hljs-comment">/**
+ * Root path - (default is &quot;http://localhost:3000&quot;)
+ * 
+ * Displays &quot;Hello World!&quot;
+ */</span>
+app.<span class="hljs-title function_">get</span>(<span class="hljs-string">&quot;/&quot;</span>, <span class="hljs-function">(<span class="hljs-params">req, res</span>) =&gt;</span> {
+  res.<span class="hljs-title function_">send</span>(<span class="hljs-string">&quot;Hello World!&quot;</span>);
+});
+
+<span class="hljs-comment">/**
+ * Terminal output message when the app starts.
+ */</span>
+app.<span class="hljs-title function_">listen</span>(port, <span class="hljs-function">() =&gt;</span> {
+  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">`Example app listening on port <span class="hljs-subst">${port}</span>`</span>);
+});
+</code></pre>
+<hr>
+<h2 id="step-1---preparing-needed-values">Step 1 - Preparing needed values</h2>
+<p>Code here can be found in <a href="step1/index.js" title="step1/index.js"><code>step1/index.js</code></a></p>
+<br />
+<p>*Stop any other running versions of this app (ctrl+C) from the terminal where you started the previous app</p>
+<ol>
+<li>
+<p><code>npm run step1</code> from the root of the repo.</p>
+</li>
+<li>
+<p>Refresh your browser or navigate to <a href="http://localhost:3000" title="http://localhost:3000"><code>http://localhost:3000</code></a>.</p>
+</li>
+<li>
+<p>You should see</p>
+<pre><code> Hello Step1! Environment ID: &lt;env-id&gt; Client ID: &lt;client-id&gt;. If you're seeing &quot;undefined&quot;, check that you've correctly created the .env file.
+</code></pre>
+<p>If you're seeing <code>undefined</code> in place of ID values, re-check that you've run through <a href="#creating-the-environment-file" title="Creating the Environment File">Creating the Environment File</a>.</p>
+</li>
+</ol>
+<br />
+<p>Here, we use your PingOne App Connection config values stored in the <code>.env</code> file:</p>
+<pre><code class="language-javascript"><span class="hljs-comment">// PingOne specific</span>
+<span class="hljs-comment">// Auth base url</span>
+<span class="hljs-keyword">const</span> authBaseURL = process.<span class="hljs-property">env</span>.<span class="hljs-property">PINGONE_AUTH_BASE_URL</span>;
+<span class="hljs-comment">// Environment ID (where the app and user are located)</span>
+<span class="hljs-keyword">const</span> envID = process.<span class="hljs-property">env</span>.<span class="hljs-property">PINGONE_ENVIRONMENT_ID</span>;
+<span class="hljs-comment">// Client ID </span>
+<span class="hljs-keyword">const</span> clientID = process.<span class="hljs-property">env</span>.<span class="hljs-property">PINGONE_CLIENT_ID</span>;
+<span class="hljs-comment">// Client Secret</span>
+<span class="hljs-keyword">const</span> clientSecret = process.<span class="hljs-property">env</span>.<span class="hljs-property">PINGONE_CLIENT_SECRET</span>;
+
+<span class="hljs-comment">// Base url of this app</span>
+<span class="hljs-keyword">const</span> appBaseURL = process.<span class="hljs-property">env</span>.<span class="hljs-property">APP_BASE_URL</span>;
+</code></pre>
+<br />
+<p>This section defines values needed for integrating PingOne authentication (using OIDC):</p>
+<pre><code class="language-javascript"><span class="hljs-comment">// App&#x27;s base origin (default is http://localhost:3000)</span>
+<span class="hljs-keyword">const</span> appBaseOrigin = appBaseURL + <span class="hljs-string">&quot;:&quot;</span> + port;
+<span class="hljs-comment">// Authorization endpoint</span>
+<span class="hljs-keyword">const</span> authorizeEndpoint = <span class="hljs-string">&quot;/as/authorize&quot;</span>;
+<span class="hljs-comment">// Token endpoint</span>
+<span class="hljs-keyword">const</span> tokenEndpoint = <span class="hljs-string">&quot;/as/token&quot;</span>;
+<span class="hljs-comment">// redirect_uri (e.g., http://localhost:3000/callback)</span>
+<span class="hljs-keyword">const</span> callbackPath = <span class="hljs-string">&quot;/callback&quot;</span>;
+<span class="hljs-keyword">const</span> redirectURI = appBaseOrigin + callbackPath;
+<span class="hljs-comment">// Scopes specify what kind of access the client is requesting from the user.</span>
+<span class="hljs-comment">//   openid - signals an OIDC request and is available by default</span>
+<span class="hljs-keyword">const</span> scopes = <span class="hljs-string">&quot;openid&quot;</span>;
+
+<span class="hljs-comment">// The Authorization Code flow is a generally a good place to start</span>
+<span class="hljs-comment">// https://datatracker.ietf.org/doc/html/draft-ietf-oauth-security-topics-23</span>
+<span class="hljs-keyword">const</span> grantType = <span class="hljs-string">&quot;authorization_code&quot;</span>;
+<span class="hljs-keyword">const</span> responseType = <span class="hljs-string">&quot;code&quot;</span>;
+</code></pre>
+<hr>
+<h2 id="step-2---modifying-the-root-path-logic">Step 2 - Modifying the Root Path Logic</h2>
+<blockquote>
+<p>[!IMPORTANT]</p>
+<p>You <em>will</em> see a <code>Cannot get /callback</code> <strong>error</strong> if you run this and authenticate (or authentication might be skipped if a live session is found). <strong>This error is expected!</strong> We'll fix that in the next step when we set up the path for the redirect uri on our app.</p>
+</blockquote>
+<br />
+<h5 id="redirect-user-to-pingone-to-authenticate">Redirect User to PingOne to Authenticate</h5>
+<ol>
+<li>Instead of only displaying text from the root path, we'll modify it to construct our authorization request as a URL and send it as a clickable &quot;Login&quot; link.</li>
+<li>Once a user navigates their browser to the root path and clicks the login link, they'll be redirected to PingOne to authenticate and authorize any access she wishes to give the client.</li>
+</ol>
+<br />
+<p>*Stop any other running versions of this app (ctrl+C) from the terminal where you started the previous app</p>
+<ol>
+<li><code>npm run step2</code> from the root of the repo.</li>
+<li>Refresh your browser or navigate to <a href="http://localhost:3000" title="http://localhost:3000"><code>http://localhost:3000</code></a>.</li>
+</ol>
+<p>The following code can also be found in <a href="step2/index.js" title="step2/index.js"><code>step2/index.js</code></a></p>
+<pre><code class="language-javascript"><span class="hljs-comment">/**
+ * Root url - &quot;http://localhost:3000/&quot; (or without the explicit &quot;/&quot; =&gt;
+ * &quot;http://localhost:3000&quot;)
+ *
+ * Creates and serves the authorization request as a plain link for the user to
+ * click and start authentication.
+ *
+ * No longer will respond with &quot;Hello World!&quot;
+ *
+ * When someone navigates their browser, or user agent, to the root path, &quot;/&quot;, a
+ * basic link with the text &quot;Login&quot; is rendered. Clicking the link will redirect
+ * the user to PingOne with the authorization request parameters. The user is
+ * then prompted to authenticate.
+ */</span>
+app.<span class="hljs-title function_">get</span>(<span class="hljs-string">&quot;/&quot;</span>, <span class="hljs-function">(<span class="hljs-params">req, res</span>) =&gt;</span> {
+  <span class="hljs-comment">// Authorization server&#x27;s authorize endpoint&#x27;s url path</span>
+  <span class="hljs-comment">// e.g.,</span>
+  <span class="hljs-comment">// &quot;z2345678-0000-456c-a657-3a21fc9ece7e/as/authorize&quot;</span>
+  <span class="hljs-keyword">const</span> authzPath = envID + authorizeEndpoint;
+  <span class="hljs-comment">// authorize request starting with the url origin and path.</span>
+  <span class="hljs-keyword">const</span> authzReq = <span class="hljs-keyword">new</span> <span class="hljs-title function_">URL</span>(authzPath, authBaseURL);
+
+  <span class="hljs-comment">// Add query parameters to define the authorize request</span>
+  authzReq.<span class="hljs-property">searchParams</span>.<span class="hljs-title function_">append</span>(<span class="hljs-string">&quot;redirect_uri&quot;</span>, redirectURI);
+  authzReq.<span class="hljs-property">searchParams</span>.<span class="hljs-title function_">append</span>(<span class="hljs-string">&quot;client_id&quot;</span>, clientID);
+  authzReq.<span class="hljs-property">searchParams</span>.<span class="hljs-title function_">append</span>(<span class="hljs-string">&quot;scope&quot;</span>, scopes);
+  authzReq.<span class="hljs-property">searchParams</span>.<span class="hljs-title function_">append</span>(<span class="hljs-string">&quot;response_type&quot;</span>, responseType);
+
+  <span class="hljs-comment">// Send a link to the browser to render with the text &quot;Login&quot;.</span>
+  <span class="hljs-comment">// When the link is clicked the user is redirected to the authorization</span>
+  <span class="hljs-comment">// server, PingOne, at the authorize endpoint. The query parameters are read</span>
+  <span class="hljs-comment">// by PingOne and combine to make the authorization request.</span>
+  res.<span class="hljs-title function_">status</span>(<span class="hljs-number">200</span>).<span class="hljs-title function_">send</span>(<span class="hljs-string">&quot;&lt;a href=&quot;</span> + authzReq.<span class="hljs-title function_">toString</span>() + <span class="hljs-string">&quot;&gt;Login&lt;/a&gt;&quot;</span>);
+});
+</code></pre>
+<hr>
+<h2 id="step-3---setting-up-the-redirect-path">Step 3 - Setting up the Redirect Path</h2>
+<ul>
+<li>
+<p>This step adds in a new path for the <code>redirect_uri</code> named <code>/callback</code>.</p>
+</li>
+<li>
+<p>After the user authenticates, PingOne uses the <code>redirect_uri</code> to send the user to, along with the <strong>authorization code</strong>.</p>
+<ul>
+<li><em>For security</em>, the <code>redirect_uri</code> must be configured on the Application Connection before performing authentication. PingOne will return an error if the <code>redirect_uri</code> provided in the authorization request is not configured on the Connection.</li>
+</ul>
+</li>
+<li>
+<p>The code extracts the <strong>Authorization Code</strong> from the query parameters of the url.[^2]</p>
+<p>The url after logging in should look something like this:</p>
+</li>
+</ul>
+<pre><code class="language-js"><span class="hljs-comment">// An example url after logging in and being redirected to /callback</span>
+<span class="hljs-attr">http</span>:<span class="hljs-comment">//localhost:3000/callback?code=1200111a-e3f5-0000-0000-1116a5443e33</span>
+</code></pre>
+<ol>
+<li>We use the code to exchange for tokens with a Token Request at the <code>/token</code> endpoint and expect, in return, . . . tokens!
+<ul>
+<li>Both an <em>access token</em> and <em>id token</em> in this case representing the user's authorization and identity information, respectively.</li>
+</ul>
+</li>
+</ol>
+<p><code>npm run step3</code></p>
+<p><small>*If this time you didn't have to login, PingOne found a live session! However, you can modify this behavior.</small></p>
+<pre><code class="language-javascript"><span class="hljs-comment">/**
+ * Callback url - &quot;http://localhost:3000/callback&quot;
+ *
+ * The path for the redirect_uri. When the user is redirected from PingOne, the
+ * authorization code is extracted from the query parameters, then the token
+ * request is constructed and submitted for access and id tokens.
+ *
+ * This path isn&#x27;t meant to be manually navigated to. It serves as the location
+ * for the user to be redirected to after interacting with PingOne, the
+ * authorization server. If the user successfully authenticated/authorized with
+ * PingOne, they&#x27;ll be sent to here with an authorization code in the query
+ * parameters which looks like (?code=&lt;random-chars&gt;). In this sample, the code
+ * is left in the URL, so you can see what it looks like and how it&#x27;s sent here,
+ * but, in practice, you&#x27;ll want to limit exposure to this value.
+ */</span>
+app.<span class="hljs-title function_">get</span>(callbackPath, <span class="hljs-keyword">async</span> (req, res) =&gt; {
+  <span class="hljs-comment">// Try to parse the authorization code from the query parameters of the url.</span>
+  <span class="hljs-keyword">const</span> authzCode = req.<span class="hljs-property">query</span>?.<span class="hljs-property">code</span>;
+
+  <span class="hljs-comment">// Send error if the authorization code was not found.</span>
+  <span class="hljs-keyword">if</span> (!authzCode) {
+    <span class="hljs-keyword">const</span> errorMsg =
+      <span class="hljs-string">&quot;Expected authorization code in query parameters.\n&quot;</span> + req.<span class="hljs-property">url</span>;
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">error</span>(errorMsg);
+    res.<span class="hljs-title function_">status</span>(<span class="hljs-number">404</span>).<span class="hljs-title function_">send</span>(<span class="hljs-string">&quot;&lt;a href=&#x27;/&#x27;&gt;Return home&lt;/a&gt;&quot;</span>);
+  }
+
+  <span class="hljs-comment">/**
+   * Set headers for token request.
+   */</span>
+  <span class="hljs-keyword">const</span> headers = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Headers</span>();
+  <span class="hljs-comment">// Content type</span>
+  headers.<span class="hljs-title function_">append</span>(<span class="hljs-string">&quot;Content-Type&quot;</span>, <span class="hljs-string">&quot;application/x-www-form-urlencoded&quot;</span>);
+  <span class="hljs-comment">// Authorization header</span>
+  <span class="hljs-comment">// Calculated as the result of base64 encoding the string:</span>
+  <span class="hljs-comment">// (clientID + &quot;:&quot; + clientSecret) and appended to &quot;Basic &quot;. e.g., &quot;Basic</span>
+  <span class="hljs-comment">// 0123456lNzQtZT3Mi00ZmM0WI4ZWQtY2Q5NTMwTE0123456==&quot;</span>
+  <span class="hljs-keyword">const</span> authzHeader =
+    <span class="hljs-string">&quot;Basic &quot;</span> + <span class="hljs-title class_">Buffer</span>.<span class="hljs-title function_">from</span>(clientID + <span class="hljs-string">&quot;:&quot;</span> + clientSecret).<span class="hljs-title function_">toString</span>(<span class="hljs-string">&quot;base64&quot;</span>);
+  headers.<span class="hljs-title function_">append</span>(<span class="hljs-string">&quot;Authorization&quot;</span>, authzHeader);
+
+  <span class="hljs-comment">// Use URLSearchParams because we&#x27;re using</span>
+  <span class="hljs-comment">// &quot;application/x-www-form-urlencoded&quot;.</span>
+  <span class="hljs-keyword">const</span> urlBodyParams = <span class="hljs-keyword">new</span> <span class="hljs-title class_">URLSearchParams</span>();
+  <span class="hljs-comment">// The grant type is the OAuth 2.0/OIDC grant type that the PingOne app</span>
+  <span class="hljs-comment">// connection is configured to accept and was used for the authorization</span>
+  <span class="hljs-comment">// request. Remember, this example is set up for Authorization Code.</span>
+  urlBodyParams.<span class="hljs-title function_">append</span>(<span class="hljs-string">&quot;grant_type&quot;</span>, grantType);
+  <span class="hljs-comment">// Include the authorization code that was extracted from the url.</span>
+  urlBodyParams.<span class="hljs-title function_">append</span>(<span class="hljs-string">&quot;code&quot;</span>, authzCode);
+  <span class="hljs-comment">// The redirect_uri is the same as what was sent in the authorize request. It</span>
+  <span class="hljs-comment">// must be registered with PingOne by configuring the app connection.</span>
+  urlBodyParams.<span class="hljs-title function_">append</span>(<span class="hljs-string">&quot;redirect_uri&quot;</span>, redirectURI);
+
+  <span class="hljs-comment">// Options to supply the fetch function.</span>
+  <span class="hljs-keyword">const</span> requestOptions = {
+    <span class="hljs-attr">method</span>: <span class="hljs-string">&quot;POST&quot;</span>,
+    <span class="hljs-attr">headers</span>: headers,
+    <span class="hljs-attr">body</span>: urlBodyParams,
+  };
+
+  <span class="hljs-comment">// PingOne token endpoint</span>
+  <span class="hljs-keyword">const</span> tokenURL = authBaseURL + <span class="hljs-string">&quot;/&quot;</span> + envID + tokenEndpoint;
+
+  <span class="hljs-comment">// Make the exchange for tokens by calling the /token endpoint and sending the</span>
+  <span class="hljs-comment">// authorization code.</span>
+  <span class="hljs-keyword">try</span> {
+    <span class="hljs-comment">// Send the token request and get the response body in JSON format.</span>
+    <span class="hljs-keyword">const</span> response = <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(tokenURL, requestOptions);
+    <span class="hljs-keyword">if</span> (response.<span class="hljs-property">ok</span>) {
+      <span class="hljs-keyword">const</span> result = <span class="hljs-keyword">await</span> response.<span class="hljs-title function_">json</span>();
+      <span class="hljs-comment">// For demo purposes, this forwards the json response from the token</span>
+      <span class="hljs-comment">// endpoint.</span>
+      res.<span class="hljs-title function_">status</span>(<span class="hljs-number">200</span>).<span class="hljs-title function_">json</span>(result);
+    } <span class="hljs-keyword">else</span> {
+      res.<span class="hljs-title function_">status</span>(response.<span class="hljs-property">status</span>).<span class="hljs-title function_">send</span>(response.<span class="hljs-title function_">json</span>());
+    }
+  } <span class="hljs-keyword">catch</span> (error) {
+    <span class="hljs-comment">// Handle error</span>
+
+    <span class="hljs-comment">// For demo purposes, log the error to the server console and send the</span>
+    <span class="hljs-comment">// error as a response.</span>
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(error);
+    res.<span class="hljs-title function_">status</span>(<span class="hljs-number">500</span>).<span class="hljs-title function_">send</span>(error);
+  }
+});
+</code></pre>
+<h6 id="congrats-you-did-it">Congrats! You did it</h6>
+<p>You've just walked through the steps to trigger authentication of a user with PingOne! The returned tokens serve as your proof.</p>
+<hr>
+<h2 id="common-errors-and-potential-solutions">Common Errors and Potential Solutions</h2>
+<ul>
+<li>If PingOne sends a redirect_uri mismatch error, check the PingOne app connection and that you've entered the redirect uri correctly.</li>
+<li>If PingOne sends a resource could not be found error, check the auth base url and that the App Connection has been turned on (flip the toggle on the app conenction)</li>
+<li>If you're having trouble authenticating with a user, make sure that user's identity exists in the same environment as the App Connection.</li>
+<li>If you have problems just running <code>npm run &lt;step + #&gt;</code>, delete <code>node_modules</code> and <code>package-lock.json</code> and run the <code>npm install</code> again. Then try starting the app again.</li>
+</ul>
+<hr>
+<h2 id="whats-next">What's next?</h2>
+<p>There are several different next steps you might take depending on your use case. Verifying the token(s), sending it in a request to PingOne, using token introspection, submitting a request to the resource server, and more.</p>
+<br />
+<p>But, first, you don't want to leave the authorization code in the url. It's done here so you can see how the flow works and what to expect when you integrate into your own app.</p>
+<p>You'll want to either:</p>
+<ul>
+<li>remove it from the query parameters in the url before loading the UI</li>
+<li>use the <code>response_mode=form_post</code> in the authorization request so the code is sent in the body of a <code>POST</code> request[^3]</li>
+</ul>
+<p>The authorization code <em>can</em> be used to get an access token in (additional protections exist like PKCE[^4]) if someone happens to get a look at that url or it can block you from getting an access token if someone else attempts to use it and the authorization server invalidates it as a precautionary measure before you get a chance to use it.</p>
+<br />
+<p>During testing, you can decode the token(s) with a <a href="https://developer.pingidentity.com/en/tools/jwt-decoder.html">free Ping Identity tool</a>, verify the signature, check if it's expired, and examine the claims contained within each token.</p>
+<h6 id="however-remember-that-these-are-bearer-tokens">However, remember that these are <code>Bearer</code> tokens!**</h6>
+<p>That means that these tokens are furry and like honey... I mean, whoever &quot;bears&quot; (aka holds) the tokens holds the power that they grant. This particular decoder runs client-side (a.k.a. exclusively in the browser), but you should still take extra care to make sure you don't give someone the keys to your kingdom!</p>
+<p>[^1]: <a href="https://openid.net/specs/openid-connect-core-1_0.html#CodeFlowAuth">Authentication using the Authorization Code Flow</a>
+[^2]: <a href="https://openid.net/specs/openid-connect-core-1_0.html#Authentication">The <code>response_type</code> parameter</a> can be used to return tokens in the authorization request without the code exchange
+[^3]: <a href="https://openid.net/specs/oauth-v2-form-post-response-mode-1_0.html#FormPostResponseMode">OpenID Connect - Form Post Response Mode</a>
+[^4]: <a href="(https://datatracker.ietf.org/doc/html/rfc7636)">RFC 7636</a></p>
+
+        <script async src="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.js"></script>
+        
+    </body>
+    </html>
