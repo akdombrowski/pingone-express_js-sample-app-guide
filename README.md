@@ -85,7 +85,7 @@ Run `npm install` or `yarn install` from the top directory of the repo.
 
 # Walk-Through
 
-The following demonstrates how to integrate PingOne by breaking it up into a few steps. Each step builds on the previous and allows you to run the app with what's been built up to that point to see what's been affected.
+The following demonstrates how to integrate PingOne by breaking it down and taking it step-by-step. Each step builds on the previous and allows you to run the app with what's been built up to that point to see what's been affected.
 
 > [!Note]
 >
