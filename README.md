@@ -32,12 +32,13 @@ This guide shows you the steps needed to integrate\* a [PingOne authentication e
 
 ## **Setting up PingOne**
 
+> [!Note]
+> See [Quick Start](https://apidocs.pingidentity.com/early-access/mainPOC/v1/api/#quick-start) in *PingOne for Developers* for more information.
+
 - Create a test **environment** and **user**.
 - Create an **app connection** in the test environment using the `OIDC Web App` template
 - On the configuration tab, add the **Redirect URI**: `http://localhost:3000/callback`
 - Ensure you enable the OIDC Web App connection using the toggle button!
-
-*See [Quick Start](https://apidocs.pingidentity.com/early-access/mainPOC/v1/api/#quick-start) in *PingOne for Developers* for more information.
 
 <img src="images/p1-app-conn-configuration-redirectURI.svg" width="67%"/>
 
@@ -88,7 +89,6 @@ Run `npm install` or `yarn install` from the top directory of the repo.
 The following demonstrates how to integrate PingOne by breaking it down and taking it step-by-step. Each step builds on the previous and allows you to run the app with what's been built up to that point to see what's been affected.
 
 > [!Note]
->
 > - Open the network tab in the browser's developer tools beforehand if you want a little deeper insight into what's happening. If you do, make sure these options are enabled:
 >   - recording
 >   - preserve logs
@@ -97,7 +97,6 @@ The following demonstrates how to integrate PingOne by breaking it down and taki
 >     <small>\*(how and where to configure these settings will depend on your browser)</small>
 
 > [!IMPORTANT]
->
 > - You only need to run `npm install` once.
 > - Stop the server (ctrl+c) between runs. You will see an error similar to the following when trying to run multiple instances of the app:
 > 
