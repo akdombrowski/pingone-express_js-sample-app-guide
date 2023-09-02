@@ -35,10 +35,10 @@ This guide shows you the steps needed to integrate\* a [PingOne authentication e
 > [!Note]
 > See [Quick Start](https://apidocs.pingidentity.com/early-access/mainPOC/v1/api/#quick-start) in *PingOne for Developers* for more information.
 
-- Create a test **environment** and **user**.
-- Create an **app connection** in the test environment using the `OIDC Web App` template
-- On the configuration tab, add the **Redirect URI**: `http://localhost:3000/callback`
-- Ensure you enable the OIDC Web App connection using the toggle button!
+1. Create a test **environment** and **user** (with a password) if you haven't already.
+2. Create an **app connection** in the test environment using the `OIDC Web App` template
+3. On the configuration tab, add the **Redirect URI**: `http://localhost:3000/callback`
+4. Ensure you enable the OIDC Web App connection using the toggle button!
 
 <img src="images/p1-app-conn-configuration-redirectURI.svg" width="67%"/>
 
