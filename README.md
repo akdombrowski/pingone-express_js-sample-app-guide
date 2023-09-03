@@ -40,7 +40,9 @@ This guide shows you the steps needed to integrate\* a [PingOne authentication e
 3. On the configuration tab, add the **Redirect URI**: `http://localhost:3000/callback`
 4. Ensure you enable the OIDC Web App connection using the toggle button!
 
-<img src="images/p1-app-conn-configuration-redirectURI.svg" width="67%"/>
+<img src="images/p1-app-conn-configuration-redirectURI.svg" width="60%"/>
+
+<img src="images/express-p1-integration-enable-app-toggle.svg" width="40%" />
 
 ---
 
