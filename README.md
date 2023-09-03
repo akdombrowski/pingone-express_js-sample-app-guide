@@ -307,7 +307,7 @@ app.get("/", (req, res) => {
   * <small>*For security*, the `redirect_uri` must be configured on the Application Connection before performing authentication. PingOne will return an error if the `redirect_uri` provided in the authorization request is not configured on the Connection.</small>
 
   ```
-  // An example url after logging in and being redirected to /callback
+  // The URL should look similart to this when redirected to /callback
   http://localhost:3000/callback?code=<uuid>
   ```
 
