@@ -22,11 +22,9 @@ This guide shows you the steps needed to integrate\* a [PingOne authentication e
 
 ## Prerequisites
 
-|                     |                                                                          |
-|---------------------|--------------------------------------------------------------------------|
-| **NodeJS**          | Minimum [v2.0](https://nodejs.org/en "Download NodeJS")                  |
-| **Modern Browser**  | Such as [Chrome](https://www.google.com/chrome/ "Download Chrome")       |
-| **PingOne Account** | [Free trial](https://www.pingidentity.com/en/try-ping.html "Free Trial") |
+|            |                                              |   |                    |                                                       |   |                     |                                                         |
+|------------|----------------------------------------------|---|--------------------|-------------------------------------------------------|---|---------------------|---------------------------------------------------------|
+| **NodeJS** | Minimum [v2.0](nodejs.org "Download NodeJS") |   | **Modern Browser** | Such as [Chrome](google.com/chrome "Download Chrome") |   | **PingOne Account** | [Free trial](pingidentity.com/en/try-ping "Free Trial") |
 
 ### Setting up PingOne
 
