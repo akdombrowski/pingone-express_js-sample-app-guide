@@ -12,7 +12,7 @@
 
 ###### Express, Server, NodeJS, OAuth 2.0, OIDC, Authz Code Grant Type, Auth, PingOne
 
-This guide shows you the steps needed to integrate\* a [PingOne authentication experience](https://apidocs.pingidentity.com/pingone/main/v1/api/#pingone-authentication-and-authorization) into a traditional web app (one with a server). We'll start with a basic [Express](https://expressjs.com/) server which will serve some a simplified UI.
+This guide shows you the steps needed to integrate\* a [PingOne authentication experience](https://apidocs.pingidentity.com/pingone/main/v1/api/#pingone-authentication-and-authorization) into a "traditional" web app (includes a server component as opposed to something that runs only on the client like a SPA). We'll start with a basic [Express](https://expressjs.com/) server which will serve some a simplified UI.
 
 <small>\*Using [OIDC Authentication using the Authorization Code Flow](https://openid.net/specs/openid-connect-core-1_0.html#CodeFlowAuth)[^1]</small>
 
@@ -28,9 +28,7 @@ This guide shows you the steps needed to integrate\* a [PingOne authentication e
 | **Modern Browser**  | Such as [Chrome](https://www.google.com/chrome/ "Download Chrome")       |
 | **PingOne Account** | [Free trial](https://www.pingidentity.com/en/try-ping.html "Free Trial") |
 
----
-
-## **Setting up PingOne**
+#### Setting up PingOne
 
 > [!Note]
 > See [Quick Start](https://apidocs.pingidentity.com/early-access/mainPOC/v1/api/#quick-start) in *PingOne for Developers* for more information.
@@ -42,7 +40,7 @@ This guide shows you the steps needed to integrate\* a [PingOne authentication e
 
 <details>
 
-<summary>How to configure Redirerct URI and enable connection</summary>
+<summary>How to configure Redirerct URI and enable the connection</summary>
 
 <img src="images/p1-app-conn-configuration-redirectURI.svg" alt="redirect uri input" width="60%"/>
 
@@ -50,9 +48,7 @@ This guide shows you the steps needed to integrate\* a [PingOne authentication e
 
 </details>
 
----
-
-## Creating the Environment File
+#### Creating the Environment File
 
 > [!NOTE]
 > The configuration values can be found on the Overview or the Configuration tab of your PingOne Application Connection
@@ -87,15 +83,14 @@ APP_BASE_URL=http://localhost
 ```
 
 </details>
+#### Install packages
 
----
-
-## Install
-
-Run `npm install` or `yarn install` from the top directory of the repo.
+Run `npm install` or `yarn install` from the top of the repo.
 
 > [!IMPORTANT]
 > - You only need to run `npm install` once.
+
+---
 
 ---
 
