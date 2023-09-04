@@ -441,8 +441,8 @@ During testing, you can decode the token(s) with a [free Ping Identity tool](htt
 Whoever "bears" (aka holds) the tokens holds the powers that they grant. This particular decoder runs client-side (i.e., exclusively in the browser), but you should still take extra care to make sure you don't give someone the keys to your kingdom!
 
 [PingOne authentication experience]: https://apidocs.pingidentity.com/pingone/main/v1/api/#pingone-authentication-and-authorization "PingOne API Docs"
-[Express]: (https://expressjs.com/) "Express"
-[v2.0]: https://pingidentity.com/en/try-ping "Download NodeJS"
+[Express]: https://expressjs.com/ "Express"
+[v2.0]: https://nodejs.org/en "Download NodeJS"
 [Chrome]: https://www.google.com/chrome/ "Download Chrome"
 [Free trial]: https://www.pingidentity.com/en/try-ping "Sign up for a free trial of PingOne"
 [Quick Start]: https://apidocs.pingidentity.com/early-access/mainPOC/v1/api/#quick-start "PingOne Quick Start Docs"
