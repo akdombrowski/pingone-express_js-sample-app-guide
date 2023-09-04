@@ -28,7 +28,7 @@ This guide shows you the steps needed to integrate\* a [PingOne authentication e
 | **Modern Browser**  | Such as [Chrome](https://www.google.com/chrome/ "Download Chrome")       |
 | **PingOne Account** | [Free trial](https://www.pingidentity.com/en/try-ping.html "Free Trial") |
 
-#### Setting up PingOne
+### Setting up PingOne
 
 > [!Note]
 > See [Quick Start](https://apidocs.pingidentity.com/early-access/mainPOC/v1/api/#quick-start) in *PingOne for Developers* for more information.
@@ -48,7 +48,7 @@ This guide shows you the steps needed to integrate\* a [PingOne authentication e
 
 </details>
 
-#### Creating the Environment File
+### Creating the Environment File
 
 > [!NOTE]
 > The configuration values can be found on the Overview or the Configuration tab of your PingOne Application Connection
@@ -83,7 +83,8 @@ APP_BASE_URL=http://localhost
 ```
 
 </details>
-#### Install packages
+
+### Install packages
 
 Run `npm install` or `yarn install` from the top of the repo.
 
