@@ -91,7 +91,7 @@ Run `npm install` or `yarn install` from the top of the repo.
 
 ---
 
-###### If you want to jump to the full integration, go straight to Step 3.
+###### If you want to jump to the full integration, you can look at the final source code in [step3/index.js](step3/index.js).
 
 # Walk-Through
 
