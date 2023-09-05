@@ -141,7 +141,9 @@ app.get("/", (req, res) => {
   // When the link is clicked the user is redirected to the authorization
   // server, PingOne, at the authorize endpoint. The query parameters are read
   // by PingOne and combine to make the authorization request.
-  res.status(200).send("<a href=" + authzReq.toString() + ">Login - Step 3</a>");
+  res
+    .status(200)
+    .send("<a href=" + authzReq.toString() + ">Login - Step 3</a>");
 });
 
 /**
@@ -237,6 +239,7 @@ app.get(callbackPath, async (req, res) => {
  */
 app.listen(port, () => {
   console.log(
-    `Step 3 - The PingOne sample Express app has started listening on ${appBaseURL}:${port}`
+    `The PingOne sample Express app has started listening on ${appBaseURL}: ${port}`
   );
+  console.log("Step 3 - Setting up the redirect_uri path and getting tokens.");
 });

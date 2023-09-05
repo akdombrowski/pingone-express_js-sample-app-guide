@@ -32,7 +32,11 @@ app.get("/", (req, res) => {
 /**
  * This outputs a message to your terminal (where you started the app) when the
  * Express server starts up.
+ * *Message has been modified.
  */
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
+  console.log(
+    `The PingOne sample Express app has started listening on ${appBaseURL}:${port}`
+  );
+  console.log("Step 0 - Creating a working Express web app.");
 });

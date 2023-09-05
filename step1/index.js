@@ -127,6 +127,7 @@ app.get("/", (req, res) => {
  */
 app.listen(port, () => {
   console.log(
-    `Step 1 - The PingOne sample Express app has started listening on ${appBaseURL}:${port}`
+    `The PingOne sample Express app has started listening on ${appBaseURL}:${port}`
   );
+  console.log("Step 1 - Reading environment variables from .env.");
 });
