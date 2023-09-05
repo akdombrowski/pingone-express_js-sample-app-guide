@@ -36,7 +36,7 @@ app.get("/", (req, res) => {
  */
 app.listen(port, () => {
   console.log(
-    `The PingOne sample Express app has started listening on ${appBaseURL}:${port}`
+    `The PingOne sample Express app has started listening on port ${port}`
   );
   console.log("Step 0 - Creating a working Express web app.");
 });
