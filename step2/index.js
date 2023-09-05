@@ -113,15 +113,22 @@ const responseType = "code";
  * Root url - "http://localhost:3000/" (or without the explicit "/" =>
  * "http://localhost:3000")
  *
- * Creates and serves the authorization request as a plain link for the user to
- * click and start authentication.
+ * The "Hello World!" text has now been replaced with a link with the text
+ * "Login".
  *
- * No longer will respond with "Hello World!"
+ * Clicking the link will redirect the user to PingOne with the authorization
+ * request parameters to authenticate and allow/deny access to certain
+ * resources.
  *
- * When someone navigates their browser, or user agent, to the root path, "/", a
- * basic link with the text "Login" is rendered. Clicking the link will redirect
- * the user to PingOne with the authorization request parameters. The user is
- * then prompted to authenticate.
+ * This is just one (simplified) way to make the authorization request. It could
+ * instead be the action of a button to redirect to the /authorize endpoint of
+ * PingOne along with the right parameters.
+ *
+ * The user authenticates and then is returned to the app via the redirect_uri.
+ * In this app, the redirect_uri is configured as a different path (which hasn't
+ * been added yet and why the "Cannot GET /callback" error is shown after
+ * redirecting back to the app). However, it doesn't need to be different if the
+ * logic were updated here to handle it appropriately.
  */
 app.get("/", (req, res) => {
   // Authorization server's authorize endpoint's url path
@@ -141,7 +148,9 @@ app.get("/", (req, res) => {
   // When the link is clicked the user is redirected to the authorization
   // server, PingOne, at the authorize endpoint. The query parameters are read
   // by PingOne and combine to make the authorization request.
-  res.status(200).send("<a href=" + authzReq.toString() + ">Login - Step 2</a>");
+  res
+    .status(200)
+    .send("<a href=" + authzReq.toString() + ">Login - Step 2</a>");
 });
 
 /**
@@ -150,6 +159,7 @@ app.get("/", (req, res) => {
  */
 app.listen(port, () => {
   console.log(
-    `Step 2 - The PingOne sample Express app has started listening on ${appBaseURL}:${port}`
+    `The PingOne sample Express app has started listening on ${appBaseURL}:${port}`
   );
+  console.log("Step 2 - Redirecting the user to PingOne to authenticate.");
 });
