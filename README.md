@@ -22,7 +22,7 @@ This guide shows you the steps needed to integrate[^1] a [PingOne authentication
 
 |            |                |   |                    |                  |   |                     |              |
 |------------|----------------|---|--------------------|------------------|---|---------------------|--------------|
-| **NodeJS** | Minimum [v2.0] |   | **Modern Browser** | Such as [Chrome] |   | **PingOne Account** | [Free trial] |
+| **NodeJS** | [v18.7.1+] recommended |   | **Modern Browser** | Such as [Chrome] |   | **PingOne Account** | [Free trial] |
 
 ### Setting up PingOne
 
@@ -36,7 +36,7 @@ This guide shows you the steps needed to integrate[^1] a [PingOne authentication
 
 <details>
 
-<summary>How to configure Redirerct URI and enable the connection</summary>
+<summary>How to configure Redirect URI and enable the connection</summary>
 
 <img src="images/p1-app-conn-configuration-redirectURI.svg" alt="redirect uri input" width="60%"/>
 
@@ -85,20 +85,22 @@ APP_BASE_URL=http://localhost
 Run `npm install` or `yarn install` from the top of the repo.
 
 > [!IMPORTANT]
-> - You only need to run `npm install` once.
+> - You only need to install once.
 
 ---
 
 ---
 
-###### If you want to jump to the full integration, you can look at the final source code in [step3/index.js](step3/index.js).
+##### *If you want to skip right to the full integration, you can look at the final source code in [step3/index.js](step3/index.js).
 
 # Walk-Through
 
-This walk-through demonstrates how to integrate PingOne with a web app (that includes a backend). The final integration is built up starting with a basic Express web app. Each step can be run as its own isolated app with what's been built up to that point. This allows you to see the effects of each step in isolation from the others.
+The walk-through demonstrates the steps to add authentication to a basic web app. Each step can be run as its own isolated app and includes only what's been built up to that point. That way, it's easier to understand what each step does and how it builds on previous ones.
 
 > [!Note]
-> - Opening the network tab in the browser's developer tools beforehand is a great way to gain a better understanding of what's happening. If you do, here are some helpful options to enable*:
+> For a deeper dive into what's going on, open your browser's developer tools. The network tab is especially useful to see how the app interacts with PingOne and what's shown to the end user. 
+> 
+> Here are some helpful options* to enable before using the app:
 >   - record network log
 >   - preserve logs
 >   - preserve log upon navigation
@@ -106,7 +108,8 @@ This walk-through demonstrates how to integrate PingOne with a web app (that inc
 >     <small>*These are from Chrome. The naming might be slightly different if a different browser is used.</small>
 
 > [!IMPORTANT]
-> - Stop the server (ctrl+c) between runs. You will see an error similar to the following when trying to run multiple instances of the app:
+> **Stop the server (ctrl+c) between runs.**
+> If you see the following error, it likely means there's a version of this app running somewhere (or something is already using port 3000):
 > 
 >   `Error: listen EADDRINUSE: address already in use :::3000`  
 
@@ -114,7 +117,7 @@ This walk-through demonstrates how to integrate PingOne with a web app (that inc
 
 ## Step 0 - Express server
 
-##### Running `step0` spins up a simple express web app with [Express's Hello World example](https://expressjs.com/en/starter/hello-world.html)
+##### Running `step0` spins up a simple express web app using [Express's Hello World example](https://expressjs.com/en/starter/hello-world.html)
 
 Also, use this step to rule out any issues in your environment.
 
@@ -255,15 +258,12 @@ This step's source code can be found in [`step2/index.js`](step2/index.js "step2
 
 ```javascript
 /**
- * Navigating to http://localhost:3000 in a browser will display a link that
- * says "Login". 
+ * Navigating to http://localhost:3000 displays a "Login" link.
  * Clicking the link will redirect the user to PingOne with the
  * authorization request parameters. This is a simplified way to make the
- * authorization request. It could instead be the action of a button to redirect
- * to the /authorize endpoint of PingOne along with the right parameters. The
- * user authenticates and then is returned to the app via the redirect_uri. In
- * this app, the redirect_uri is configured as a different path, but it doesn't
- * need to be different if handled appropriately.
+ * authorization request. It could instead be tied to a nicer looking button.
+ * The user authenticates with PingOne and then is returned to the app via the redirect_uri.
+ * In this app, the redirect_uri is configured as a different path, but it could be the same.
  */
 app.get("/", (req, res) => {
   // Authorization server's authorize endpoint's url path
@@ -442,7 +442,7 @@ Whoever "bears" (aka holds) the tokens holds the powers that they grant. This pa
 
 [PingOne authentication experience]: https://apidocs.pingidentity.com/pingone/main/v1/api/#pingone-authentication-and-authorization "PingOne API Docs"
 [Express]: https://expressjs.com/ "Express"
-[v2.0]: https://nodejs.org/en "Download NodeJS"
+[v18.7.1+]: https://nodejs.org/en "Download NodeJS"
 [Chrome]: https://www.google.com/chrome/ "Download Chrome"
 [Free trial]: https://www.pingidentity.com/en/try-ping "Sign up for a free trial of PingOne"
 [Quick Start]: https://apidocs.pingidentity.com/early-access/mainPOC/v1/api/#quick-start "PingOne Quick Start Docs"
