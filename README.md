@@ -22,7 +22,7 @@ This guide shows you the steps needed to integrate[^1] a [PingOne authentication
 
 |            |                |   |                    |                  |   |                     |              |
 |------------|----------------|---|--------------------|------------------|---|---------------------|--------------|
-| **NodeJS** | [v18.7.1+] recommended |   | **Modern Browser** | Such as [Chrome] |   | **PingOne Account** | [Free trial] |
+| **NodeJS** | [v18.7.1+] required |   | **Modern Browser** | Such as [Chrome] |   | **PingOne Account** | [Free trial] |
 
 ### Setting up PingOne
 
