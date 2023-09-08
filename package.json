@@ -29,7 +29,7 @@
     "Cybersecurity"
   ],
   "engines": {
-    "node": ">2.0"
+    "node": ">18.7.1"
   },
   "dependencies": {
     "dotenv": "^16.0.3",
