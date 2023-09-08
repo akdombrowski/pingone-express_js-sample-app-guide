@@ -239,7 +239,7 @@ app.get(callbackPath, async (req, res) => {
  */
 app.listen(port, () => {
   console.log(
-    `The PingOne sample Express app has started listening on ${appBaseURL}: ${port}`
+    `The PingOne sample Express app has started listening on ${appBaseURL}:${port}`
   );
   console.log("Step 3 - Setting up the redirect_uri path and getting tokens.");
 });
