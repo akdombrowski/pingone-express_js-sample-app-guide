@@ -1,14 +1,16 @@
 /**
  * PingOne Integration Guide - Express.js Sample App
  *
- * This repo is designed as a guide that walks you through the steps to add
- * authentication using PingOne into a simplified traditional web app using
- * Express. Running the app will spin up an Express server which will serve a
- * minimal UI. You can use this to trigger a PingOne Authentication or DaVinci
- * Policy assigned to an OAuth/OIDC Application Connection.
+ * This repo
+ * (https://github.com/dbrowski/pingone-express_js-sample-app-guide#readme) is
+ * designed as a guide that walks you through the steps to add authentication
+ * using PingOne into a traditional web app. Running the app at any step will
+ * spin up an Express server which will serve a minimal UI. You can use this to
+ * trigger a PingOne Authentication or DaVinci Policy assigned to a PingOne App
+ * Connection.
  *
- * We'll start with a basic working app using the Hello world example from
- * Express.
+ * This step sets up starting point, a simple web app. The code comes from the
+ * Hello world example from Express.
  * https://expressjs.com/en/starter/hello-world.html
  */
 
@@ -20,7 +22,7 @@ const app = express();
 const port = 3000;
 
 /**
- * Root url - "http://localhost:3000/" (or without the explicit "/" =>
+ * Root path - "http://localhost:3000/" (or without the explicit "/" =>
  * "http://localhost:3000")
  *
  * Navigating to the root path should render "Hello World!" in your browser.
@@ -32,9 +34,9 @@ app.get("/", (req, res) => {
 /**
  * This outputs a message to your terminal (where you started the app) when the
  * Express server starts up.
- * *Message has been modified.
  */
 app.listen(port, () => {
+  // The console output has been modified for this guide.
   console.log(
     `The PingOne sample Express app has started listening on port ${port}`
   );

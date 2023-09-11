@@ -5,28 +5,35 @@
   "author": {
     "name": "Anthony Dombrowski"
   },
+  "license": "Apache-2.0",
   "repository": {
-    "url": "https://github.com/akdombrowski/pingone-express_js-sample-app-guide"
+    "url": "https://github.com/dbrowski/pingone-express_js-sample-app-guide"
   },
-  "homepage": "https://github.com/akdombrowski/pingone-express_js-sample-app-guide#readme",
-  "readme": "https://github.com/akdombrowski/pingone-express_js-sample-app-guide#readme",
-  "description": "A simple implementation of OAuth/OIDC Auth using the Authorization Code flow and PingOne",
+  "homepage": "https://github.com/dbrowski/pingone-express_js-sample-app-guide#readme",
+  "readme": "https://github.com/dbrowski/pingone-express_js-sample-app-guide#readme",
+  "description": "A walkthrough guide on how to add authentication using PingOne to a traditional web app (includes server).",
   "keywords": [
     "PingOne",
     "NodeJS",
     "Express",
+    "Authentication",
     "OAuth 2.0",
     "OIDC",
+    "Authorization Code",
     "Authz Code Grant Type",
+    "Web App",
+    "Server",
     "Auth",
     "Authn",
     "Authz",
     "Authorization",
-    "Authentication",
     "OpenID",
+    "OpenIDConnect",
     "Identity",
+    "IAM",
     "Login",
-    "Cybersecurity"
+    "Cybersecurity",
+    "Security"
   ],
   "engines": {
     "node": ">18.7.1"
