@@ -1,31 +1,17 @@
 /**
- * PingOne Express.js Sample App
+ * PingOne Integration with a Traditional Web App
  *
- * This is an extremely simplified web app using Express.js on the backend which
- * demonstrates how to use PingOne to authenticate your users.
+ * This is part of the walkthrough guide (see
+ * https://github.com/dbrowski/pingone-express_js-sample-app-guide#readme).
  *
+ * This is a "traditional web app" (a web app with a server component as opposed
+ * to a SPA or client-side app) is used to demonstrate how to add authentication
+ * using PingOne.
  *
- * Some terminology which might be helpful -
- *
- * Client --------------- This express app running in nodejs.
- *                        It's considered "private" because it runs server-side
- *                        and can keep a secret, well, secret (as opposed to a
- *                        SPA/client-side app which sends everything to the
- *                        browser/frontend).
- *
- * Authorization Server - PingOne is the mutually trusted (by the user and
- *                        the client) 3rd party handling authentication and
- *                        authorization.
- *
- * Resource Owner ------- The authenticating user.
- *
- * OAuth (2.0) ---------- The authorization framework.
- *                        And, the Authorization Code flow, is generally the
- *                        flow to start with in order to comply with best
- *                        practice.
- *
- * OIDC ----------------- The authentication framework which layers on top of
- *                        OAuth 2.0
+ * Express is a Node.js web app framework that is used here to create the web
+ * app, but the steps can be used on most Node.js apps. And, understanding the
+ * steps from this guide can even help you integrate PingOne with
+ * SPA/client-side apps and other traditional web apps not using Node.js.
  */
 
 /**
@@ -39,26 +25,13 @@ const port = 3000;
 require("dotenv").config();
 
 /**
- * To start, copy the '.env.EXAMPLE' file.
- * And, rename the new file as '.env'.
- * Then, fill in your values.
- *
- * On how to get those values...
- * If you don't already have a PingOne account, you can start a trial at:
- * pingidentity.com/en/try-ping
- *
- * You'll want to register your app with PingOne to start using PingOne's
- * services.
- *
- * If you navigate to Connections > Applications in the PingOne Admin Console,
- * you can create a new App Connection (OIDC Web App) which will represent your
- * app's registration with PingOne.
- *
- * After creating your App Connection, you can navigate to the Configuration tab
- * where you'll find these config values to add to your '.env' file.
+ * To start, create a copy of the '.env.EXAMPLE' file, and name the file '.env'.
+ * Then, fill in the required PingOne values using the config values from an
+ * (oidc web app) app connection.
  *
  * On the app connection, don't forget to set the redirect_uri to be http://
- * localhost:3000/callback (default for this app).
+ * localhost:3000/callback on the configuration tab of the app connection in the
+ * admin console.
  *
  * Finally, don't forget to click the toggle in the top right to turn it on!
  */
@@ -90,17 +63,25 @@ const callbackPath = "/callback";
 // The full url where the user is redirected after authenticating/authorizing
 // with PingOne.
 const redirectURI = appBaseURL + ":" + port + callbackPath;
-// Scopes specify what kind of access the client is requesting from the user.
-// These are some standard OIDC scopes.
-//   openid - signals an OIDC request; default resource on oauth/oidc app
-// connection
-// These need to be added as resources to the app connection or it will be
-// ignored by the authorization server. Once that's done, you can then append
-// it to your scopes variable using a whitespace to separate it from any other
-// scopes.
-//   profile - access to basic user info;
-//   p1:read:user - access to read the user's PingOne identity's attributes (a
-// PingOne - specific scope)
+/**
+ * Scopes specify what kind of access the client is requesting from the user.
+ *
+ * For example, "openid" is a scope which requests access to some basic user
+ * info. It's also the default resource on a PingOne OAuth/OIDC app connection
+ *
+ *
+ * Scopes not added to the app connection (you can see and modify them on the
+ * Resources tab) will be ignored by the authorization server even if requested
+ * by the client. Otherwise, additional scopes can be appended after a space.
+ *
+ *
+ * Some other examples of scopes you can add:
+ *
+ * profile - access to basic user info;
+ *
+ * p1:read:user - access to read the authenticating user's info attributes (a
+ * PingOne-specific scope for reading the user's associated PingOne Identity)
+ */
 const scopes = "openid";
 // The OAuth 2.0 grant type and associated type of response expected from the
 // /authorize endpoint. The Authorization Code flow is recommended as the best
@@ -110,25 +91,29 @@ const grantType = "authorization_code";
 const responseType = "code";
 
 /**
- * Root url - "http://localhost:3000/" (or without the explicit "/" =>
+ * Root path - "http://localhost:3000/" (or without the explicit "/" =>
  * "http://localhost:3000")
  *
- * The "Hello World!" text has now been replaced with a link with the text
- * "Login".
+ * The text displayed with the app from step 1 is replaced by a link with the
+ * text "Login" (and the current step).
+ *
  *
  * Clicking the link will redirect the user to PingOne with the authorization
- * request parameters to authenticate and allow/deny access to certain
- * resources.
+ * request parameters to authenticate and authorize access to certain resources
+ * (the scopes).
+ *
  *
  * This is just one (simplified) way to make the authorization request. It could
  * instead be the action of a button to redirect to the /authorize endpoint of
  * PingOne along with the right parameters.
  *
- * The user authenticates and then is returned to the app via the redirect_uri.
- * In this app, the redirect_uri is configured as a different path (which hasn't
- * been added yet and why the "Cannot GET /callback" error is shown after
- * redirecting back to the app). However, it doesn't need to be different if the
- * logic were updated here to handle it appropriately.
+ *
+ * After the user authenticates, PingOne sends the user to the redirect_uri
+ * which is typically back on the originating app. In this app, the redirect_uri
+ * is configured as a different endpoint then where the user started (which
+ * hasn't been added yet and why the "Cannot GET /callback" error message is
+ * shown after redirecting back to the app). However, it could be the same
+ * endpoint with some modifications to the logic.
  */
 app.get("/", (req, res) => {
   // Authorization server's authorize endpoint's url path
@@ -144,13 +129,16 @@ app.get("/", (req, res) => {
   authzReq.searchParams.append("scope", scopes);
   authzReq.searchParams.append("response_type", responseType);
 
-  // Send a link to the browser to render with the text "Login".
-  // When the link is clicked the user is redirected to the authorization
-  // server, PingOne, at the authorize endpoint. The query parameters are read
-  // by PingOne and combine to make the authorization request.
+  /**
+   * Returns the "Login" link (and the current step)
+   *
+   * When the link is clicked the user is redirected to the authorization
+   * server, PingOne, at the authorize endpoint. The query parameters are read
+   * by PingOne and combine to make the request.
+   */
   res
     .status(200)
-    .send("<a href=" + authzReq.toString() + ">Login - Step 2</a>");
+    .send("Step 2 <br/> <a href=" + authzReq.toString() + ">Login</a>");
 });
 
 /**
@@ -163,3 +151,37 @@ app.listen(port, () => {
   );
   console.log("Step 2 - Redirecting the user to PingOne to authenticate.");
 });
+
+/**
+ * Some terminology which might be helpful...
+ *
+ *
+ * Client - This express app.
+ *
+ * This app is considered a "private client" because it can protect a secret
+ * server-side vs. a SPA/client-side app, for example, which cannot.
+ *
+ *
+ * Authorization Server - PingOne
+ *
+ * PingOne is the mutually trusted (by the user
+ * and the client) 3rd party handling authentication and authorization.
+ *
+ *
+ * Resource Owner - The authenticating user.
+ *
+ * The client requests access to some resource(s) that a user owns. The user
+ * authenticates and authorizes (or rejects) access access to the resource.
+ *
+ *
+ * OAuth 2.0 - The authorization framework.
+ *
+ * The OAuth 2.0 Authorization Code flow, is generally the flow to start with in
+ * order to comply with best practice.
+ *
+ *
+ * OIDC - The authentication framework.
+ *
+ * A layer on top of OAuth 2.0 which allows the client to know the identity of
+ * the user.
+ */

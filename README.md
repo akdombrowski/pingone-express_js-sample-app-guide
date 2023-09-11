@@ -1,4 +1,4 @@
-<picture>\^1
+<picture>
   <source media="(prefers-color-scheme: dark)" type="image/svg" srcset="images/PingIdentity-dark.svg">
   <source media="(prefers-color-scheme: light)" type="image/svg" srcset="images/PingIdentity.svg">
   <img alt="PingOne Cloud Platform" src="images/PingIdentity.svg">
