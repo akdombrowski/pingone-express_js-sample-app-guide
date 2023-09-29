@@ -92,7 +92,7 @@ Run `npm install` or `yarn install` from the top of the repo.
 ---
 
 > [!NOTE]
-> ### If you want to skip the step-by-step guide and jump straight to the final integration, you can jump straight to [step 3](#Step-3---Setting-up-the-Redirect-Path "step 3").
+> ### If you want to skip the step-by-step guide and jump straight to the final integration, go to [step 3](#Step-3---Setting-up-the-Redirect-Path "step 3").
 
 # Walk-Through
 
