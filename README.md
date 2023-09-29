@@ -27,7 +27,7 @@ This guide shows you the steps needed to integrate[^1] a [PingOne authentication
 ### Setting up PingOne
 
 > [!Note]
-> See [Quick Start] in *PingOne for Developers* for more information.
+> See [Quick Start] in _PingOne for Developers_ for more information.
 
 1. Create a test **environment** and **user** (with a password) if you haven't already.
 2. Create an **app connection** in the test environment using the `OIDC Web App` template
@@ -36,7 +36,7 @@ This guide shows you the steps needed to integrate[^1] a [PingOne authentication
 
 <details>
 
-<summary>How to configure Redirect URI and enable the connection</summary>
+**<summary>Click here to see what to look for</summary>**
 
 <img src="images/p1-app-conn-configuration-redirectURI.svg" alt="redirect uri input" width="60%"/>
 
@@ -52,11 +52,11 @@ This guide shows you the steps needed to integrate[^1] a [PingOne authentication
 1. Duplicate the `.env.EXAMPLE` template file and rename the copy `.env` at the top directory of the repo.
 2. Fill in the empty values with the corresponding ones from the PingOne App Connection.
 
-You can see the template file here [`.env.EXAMPLE`](.env.EXAMPLE "Template Environment File")
+[You can click me to take a closer look at the template file `.env.EXAMPLE`](.env.EXAMPLE "Template Environment File")
 
 <details>
 
-__<summary>Or click me to see the template here</summary>__
+**<summary>Or click me to see the template here</summary>**
 
 ```shell
 # Auth base url is dependent upon region
@@ -82,37 +82,36 @@ APP_BASE_URL=http://localhost
 
 ### Install packages
 
-Run `npm install` or `yarn install` from the top of the repo.
-
-> [!IMPORTANT]
-> - You only need to install once.
+Run `npm install` or `yarn install` from the top of the repo. You only need to install once.
 
 ---
 
 ---
 
 > [!NOTE]
-> ### If you want to skip the step-by-step guide and jump straight to the final integration, go to [step 3](#Step-3---Setting-up-the-Redirect-Path "step 3").
+>
+> #### If you want to skip the step-by-step guide and jump straight to the final integration, go to [step 3](#step-3---setting-up-the-redirect-path "step 3")
 
 # Walk-Through
 
 The walk-through demonstrates the steps to add authentication to a basic web app. Each step can be run as its own isolated app and includes only what's been built up to that point. That way, it's easier to understand what each step does and how it builds on previous ones.
 
 > [!Note]
-> For a deeper dive into what's going on, open your browser's developer tools. The network tab is especially useful to see how the app interacts with PingOne and what's shown to the end user. 
-> 
+> For a deeper dive into what's going on, open your browser's developer tools. The network tab is especially useful to see how the app interacts with PingOne and what's shown to the end user.
+>
 > Here are some helpful options* to enable before using the app:
->   - record network log
->   - preserve logs
->   - preserve log upon navigation
-> 
+>
+> - record network log
+> - preserve logs
+> - preserve log upon navigation
+>
 >     <small>*These are from Chrome. The naming might be slightly different if a different browser is used.</small>
 
 > [!IMPORTANT]
 > **Stop the server (ctrl+c) between runs.**
 > If you see the following error, it likely means there's a version of this app running somewhere (or something is already using port 3000):
-> 
->   `Error: listen EADDRINUSE: address already in use :::3000`  
+>
+> `Error: listen EADDRINUSE: address already in use :::3000`  
 
 ---
 
@@ -129,12 +128,11 @@ Also, use this step to rule out any issues in your environment.
 3. Navigate to [`http://localhost:3000`](http://localhost:3000 "port 3000 on http://localhost").
 4. You should see "Hello World".
 
-
 This step's source code can be found in [`step0/index.js`](step0/index.js "step0 source code")
 
 <details>
 
-<summary>Or expand to view the code here</summary>
+**<summary>Or click me to view the code here</summary>**
 
 ```javascript
 /**
@@ -168,7 +166,7 @@ app.listen(port, () => {
 
 ## Step 1 - Preparing needed values
 
-This step creates constants for the values you added in `.env` along with the OAuth 2.0/OIDC values that will be needed in later steps. 
+This step creates constants for the values you added in `.env` along with the OAuth 2.0/OIDC values that will be needed in later steps.
 
 <sub>*Stop any other versions of this app (ctrl+C) from the terminal where you started the previous app</sub>
 
@@ -184,9 +182,9 @@ This step's source code can be found in [`step1/index.js`](step1/index.js "step1
   
 <details>
   
-<summary>Or expand to view the code here</summary>
+**<summary>Or click me to view the code here</summary>**
 
-###### Here, the PingOne App Connection config values stored in the `.env` file are read and assigned to constants:
+###### Here, the PingOne App Connection config values stored in the `.env` file are read and assigned to constants
 
 ```javascript
 // PingOne specific
@@ -203,7 +201,7 @@ const clientSecret = process.env.PINGONE_CLIENT_SECRET;
 const appBaseURL = process.env.APP_BASE_URL;
 ```
 
-###### This section defines values needed for integrating PingOne authentication (using OIDC):
+###### This section defines values needed for integrating PingOne authentication (using OIDC)
 
 ```javascript
 // App's base origin (default is http://localhost:3000)
@@ -240,7 +238,7 @@ const responseType = "code";
 
 > [!IMPORTANT]
 >
-> You *will* see a `Cannot get /callback` **error message** after clicking `Login` and authenticating (or authentication might be skipped if a live session is found).
+> You _will_ see a `Cannot get /callback` **error message** after clicking `Login` and authenticating (or authentication might be skipped if a live session is found).
 > **This error is expected!** We've not yet set up the redirect path, `/callback`. The next step will show you how to do that.
 
 <sub>*Stop any other versions of this app (ctrl+C) from the terminal where you started the previous app</sub>
@@ -255,7 +253,7 @@ This step's source code can be found in [`step2/index.js`](step2/index.js "step2
   
 <details>
   
-<summary>Or expand to view the code here</summary>
+**<summary>Or click me to view the code here</summary>**
 
 ```javascript
 /**
@@ -296,13 +294,13 @@ app.get("/", (req, res) => {
 
 ##### This step adds in a new `/callback` path for the `redirect_uri` and extracts the **authorization code** from the query parameters of the url.[^2]
 
-* After the user authenticates, PingOne uses the `redirect_uri` to redirect the browser (and user user) and sends along the **authorization code** as the value of the `code` parameter:
+- After the user authenticates, PingOne uses the `redirect_uri` to redirect the browser (and user user) and sends along the **authorization code** as the value of the `code` parameter:
   
   `http://localhost:3000/callback?code=<uuid>`
   
-  * <small>*For security*, the `redirect_uri` must be configured on the Application Connection before performing authentication. PingOne will return an error if the `redirect_uri` provided in the authorization request is not configured on the Connection.</small>
-* The code is exchanged for tokens with a Token Request at the `/token` endpoint to get . . . tokens!
-  * <small>*Both an *access token* and *id token* are returned (because `openid` was included as a scope) which represent the *authorization* and *authentication*, respectively.</small>
+  - <small>_For security_, the `redirect_uri` must be configured on the Application Connection before performing authentication. PingOne will return an error if the `redirect_uri` provided in the authorization request is not configured on the Connection.</small>
+- The code is exchanged for tokens with a Token Request at the `/token` endpoint to get . . . tokens!
+  - <small>*Both an _access token_ and _id token_ are returned (because `openid` was included as a scope) which represent the _authorization_ and _authentication_, respectively.</small>
 
 <sub>*Stop any other running versions of this app (ctrl+C) from the terminal where you started the previous app</sub>
 
@@ -318,7 +316,7 @@ This step's source code can be found in [`step3/index.js`](step3/index.js "step3
   
 <details>
   
-<summary>Or expand to view the code here</summary>
+**<summary>Or click me to view the code here</summary>**
 
 ```javascript
 /**
@@ -397,13 +395,14 @@ app.get(callbackPath, async (req, res) => {
   }
 });
 ```
+
 </details>
 
 <br />
 
 ---
 
-### Congrats! You did it!
+### Congrats! You did it
 
 You've just walked through the steps to authenticate a user with PingOne! The returned tokens serve as your proof.
 
@@ -415,6 +414,9 @@ You've just walked through the steps to authenticate a user with PingOne! The re
 - If PingOne sends a resource could not be found error, check the auth base url and that the App Connection has been turned on (flip the toggle on the app conenction)
 - If you're having trouble authenticating with a user, make sure that user's identity exists in the same environment as the App Connection.
 - If you have problems just running `npm run <step + #>`, delete `node_modules` and `package-lock.json` and run the `npm install` again. Then try starting the app again.
+- If you see the following error in the terminal after clicking the Login link in Step 3
+  `UnhandledPromiseRejectionWarning: ReferenceError: Headers is not defined`
+  Make sure your version of Node meets [the min. version described in the prerequisites](#prerequisites "Prerequisites").
 
 ---
 
@@ -431,7 +433,7 @@ You'll want to either:
 - remove it from the query parameters in the url before loading the UI
 - use the `response_mode=form_post` in the authorization request so the code is sent in the body of a `POST` request[^3]
 
-The authorization code *can* be used to get an access token in (additional protections exist like PKCE[^4]) if someone happens to get a look at that url or it can block you from getting an access token if someone else attempts to use it and the authorization server invalidates it as a precautionary measure before you get a chance to use it.
+The authorization code _can_ be used to get an access token in (additional protections exist like PKCE[^4], which you should use) if someone happens to get a look at that url or it can block you from getting an access token if someone else attempts to use it and the authorization server invalidates it as a precautionary measure before you get a chance to use it.
 
 <br />
 
