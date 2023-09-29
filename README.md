@@ -20,8 +20,8 @@ This guide shows you the steps needed to integrate[^1] a [PingOne authentication
 
 ## Prerequisites
 
-|            |                |   |                    |                  |   |                     |              |
-|------------|----------------|---|--------------------|------------------|---|---------------------|--------------|
+|            |                     |   |                    |                  |   |                     |              |
+|------------|---------------------|---|--------------------|------------------|---|---------------------|--------------|
 | **NodeJS** | [v18.7.1+] required |   | **Modern Browser** | Such as [Chrome] |   | **PingOne Account** | [Free trial] |
 
 ### Setting up PingOne
@@ -56,7 +56,7 @@ You can see the template file here [`.env.EXAMPLE`](.env.EXAMPLE "Template Envir
 
 <details>
 
-<summary>Or expand to see the template here</summary>
+__<summary>Or click me to see the template here</summary>__
 
 ```shell
 # Auth base url is dependent upon region
@@ -91,7 +91,8 @@ Run `npm install` or `yarn install` from the top of the repo.
 
 ---
 
-##### *If you want to skip right to the full integration, you can look at the final source code in [step3/index.js](step3/index.js).
+> [!NOTE]
+> ### If you want to skip the step-by-step guide and jump straight to the final integration, go to [step 3](#Step-3---Setting-up-the-Redirect-Path "step 3").
 
 # Walk-Through
 
