@@ -294,7 +294,7 @@ app.get("/", (req, res) => {
 
 ##### This step adds in a new `/callback` path for the `redirect_uri` and extracts the **authorization code** from the query parameters of the url.[^2]
 
-- After the user authenticates, PingOne uses the `redirect_uri` to redirect the browser (and user user) and sends along the **authorization code** as the value of the `code` parameter:
+- After the user authenticates, PingOne uses the `redirect_uri` to redirect the browser (and user) and sends along the **authorization code** as the value of the `code` parameter:
   
   `http://localhost:3000/callback?code=<uuid>`
   
