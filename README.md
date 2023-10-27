@@ -92,7 +92,13 @@ Run `npm install` or `yarn install` from the top of the repo.
 ---
 
 > [!NOTE]
-> ### If you want to skip the step-by-step guide and jump straight to the final integration, go to [step 3](#Step-3---Setting-up-the-Redirect-Path "step 3").
+> *You still need to complete the prerequisites above*
+> #### You can jump straight to [Step 3](#Step-3---Setting-up-the-Redirect-Path "step 3") to skip the explanation of the steps to get there.
+
+---
+
+---
+
 
 # Walk-Through
 
@@ -296,7 +302,7 @@ app.get("/", (req, res) => {
 
 ##### This step adds in a new `/callback` path for the `redirect_uri` and extracts the **authorization code** from the query parameters of the url.[^2]
 
-* After the user authenticates, PingOne uses the `redirect_uri` to redirect the browser (and user user) and sends along the **authorization code** as the value of the `code` parameter:
+* After the user authenticates, PingOne uses the `redirect_uri` to redirect the browser (and user) and sends along the **authorization code** as the value of the `code` parameter:
   
   `http://localhost:3000/callback?code=<uuid>`
   
